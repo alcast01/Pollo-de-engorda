@@ -19,6 +19,7 @@ st.markdown("""
         font-size: 2.2rem;
         color: #00FFCC;
         font-weight: 700;
+        margin-bottom: 0px;
     }
     .sub-slogan {
         font-style: italic;
@@ -49,9 +50,11 @@ if "autenticado" not in st.session_state:
 if "usuario_nombre" not in st.session_state:
     st.session_state.usuario_nombre = ""
 
+# Ruta común del logotipo
+logo_path = "watermarked_img_17480332752636885818.jpg"
+
 # --- PANEL IZQUIERDO (BARRA LATERAL) ---
 with st.sidebar:
-    logo_path = "watermarked_img_17480332752636885818.jpg"
     if os.path.exists(logo_path):
         st.image(logo_path, use_column_width=True)
     else:
@@ -61,7 +64,7 @@ with st.sidebar:
     st.markdown("*«Inteligencia artificial que potencia la genética y engorda de tus pollos con precisión matemática.»*")
     st.divider()
     
-    # 1. ACCESO Y SEGURIDAD
+    # 1. ACCESO Y SEGURIDAD (SEPARADO)
     st.subheader("🔐 Acceso y Seguridad")
     if not st.session_state.autenticado:
         with st.form("form_login"):
@@ -86,7 +89,7 @@ with st.sidebar:
 
     st.divider()
     
-    # 2. CALIBRACIÓN AVANZADA DE PRODUCCIÓN Y RENDIMIENTO
+    # 2. CALIBRACIÓN AVANZADA DE PRODUCCIÓN Y RENDIMIENTO (ORGANIZADA POR GRUPOS)
     st.subheader("⚙️ Calibración de Granja")
     st.markdown("Parámetros clave para rendimiento y control de costos:")
     
@@ -113,7 +116,7 @@ with st.sidebar:
 
     st.divider()
     
-    # 3. PLANES DE SUSCRIPCIÓN
+    # 3. PLANES DE SUSCRIPCIÓN (SEPARADO)
     st.subheader("💳 Planes de Suscripción")
     plan = st.selectbox(
         "Esquema de licenciamiento:",
@@ -129,12 +132,20 @@ with st.sidebar:
         
     st.divider()
     
-    # CRÉDITOS OFICIALES
+    # CRÉDITOS OFICIALES (EN MAYÚSCULAS)
     st.markdown('<p class="credits-text">DESARROLLADA Y CREADA POR: DR. ALEJANDRO CASTAÑEDA CORREA</p>', unsafe_allow_html=True)
 
-# --- PANTALLA PRINCIPAL ---
-st.markdown('<p class="main-header">🐔 Engord-IA Pollo: Panel de Control Inteligente</p>', unsafe_allow_html=True)
-st.markdown('<p class="sub-slogan">«Inteligencia artificial que potencia la genética y engorda de tus pollos con precisión matemática.»</p>', unsafe_allow_html=True)
+# --- PANTALLA PRINCIPAL (PÁGINA DE INICIO) ---
+# Cabecera principal con logotipo integrado lado a lado
+col_img_main, col_txt_main = st.columns([1, 4])
+with col_img_main:
+    if os.path.exists(logo_path):
+        st.image(logo_path, use_column_width=True)
+with col_txt_main:
+    st.markdown('<p class="main-header">🐔 Engord-IA Pollo: Panel de Control Inteligente</p>', unsafe_allow_html=True)
+    st.markdown('<p class="sub-slogan">«Inteligencia artificial que potencia la genética y engorda de tus pollos con precisión matemática.»</p>', unsafe_allow_html=True)
+
+st.divider()
 
 if not st.session_state.autenticado:
     st.warning("⚠️ Por favor inicia sesión en la barra lateral para desbloquear todos los módulos operativos de la granja.")
