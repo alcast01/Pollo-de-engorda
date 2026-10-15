@@ -72,7 +72,6 @@ with st.sidebar:
             if btn_login:
                 if correo_input and password_input:
                     st.session_state.autenticado = True
-                    # Extraer un nombre base del correo o usar genérico
                     st.session_state.usuario_nombre = correo_input.split('@')[0].capitalize()
                     st.success(f"¡Bienvenido, {st.session_state.usuario_nombre}!")
                     st.rerun()
@@ -87,7 +86,7 @@ with st.sidebar:
 
     st.divider()
     
-    # MÓDULO 2: PLANES DE SUSCRIPCIÓN Y LICENCIAMIENTO (SEPARADO DE LA AUTENTICACIÓN)
+    # MÓDULO 2: PLANES DE SUSCRIPCIÓN Y LICENCIAMIENTO
     st.subheader("💳 Planes de Suscripción")
     plan = st.selectbox(
         "Selecciona tu esquema de licenciamiento:",
@@ -116,14 +115,14 @@ if not st.session_state.autenticado:
 # Pestañas de navegación
 tab1, tab2, tab3, tab4 = st.tabs([
     "📊 Dashboard General", 
-    "🥗 Diseño y Optimización de Dietas", 
+    "🥗 Formulación y Calibración de Dietas", 
     "💉 Calendario de Vacunación", 
     "💰 Comercialización y Costos"
 ])
 
 # --- TAB 1: DASHBOARD ---
 with tab1:
-    st.subheader("Resumen del Estado de la Parvada")
+    st.subheader("Resumen del Estado de la Parvada y Calibración Ambiental")
     col1, col2, col3, col4 = st.columns(4)
     with col1:
         st.metric("Aves en Producción", "10,000", "+500 este mes")
@@ -132,14 +131,14 @@ with tab1:
     with col3:
         st.metric("Conversión Alimenticia (ICA)", "1.62", "-0.04 vs lote previo")
     with col4:
-        st.metric("Índice de Viabilidad", "97.8%", "Excelente sanidad")
+        st.metric("Temperatura Galpón", "24.5 °C", "Humedad: 55%")
         
-    st.info("💡 **Recomendación de IA:** Las condiciones de temperatura en el galpón 2 son óptimas. Se sugiere incrementar un 2% la densidad energética de la dieta para acelerar la ganancia de peso final.")
+    st.info("💡 **Recomendación de IA:** Las variables bioclimáticas del galpón 2 están en rango óptimo. El sistema ha ajustado automáticamente la densidad energética de la dieta para maximizar la tasa de conversión.")
 
-# --- TAB 2: DISEÑO Y OPTIMIZACIÓN DE DIETAS (LEAST-COST) ---
+# --- TAB 2: DISEÑO Y OPTIMIZACIÓN DE DIETAS (MATRIZ AVANZADA) ---
 with tab2:
-    st.subheader("Módulo de Formulación de Dietas al Mínimo Costo (Programación Lineal)")
-    st.markdown("El motor de optimización calcula las proporciones exactas de cada ingrediente disponible para satisfacer los requerimientos nutricionales al menor costo por kilo de alimento.")
+    st.subheader("Módulo de Formulación al Mínimo Costo con Restricciones de Proteína Ideal")
+    st.markdown("El motor matemático optimiza simultáneamente energía, proteína bruta y aminoácidos esenciales digestibles (Lisina, Metionina+Cistina y Treonina) para garantizar el máximo rendimiento genético.")
     
     col_d1, col_d2 = st.columns(2)
     with col_d1:
@@ -147,35 +146,37 @@ with tab2:
         peso_meta = st.number_input("Peso Meta Esperado (kg)", value=2.80, step=0.05)
     
     with col_d2:
-        st.markdown("#### Requerimientos Nutricionales Mínimos de la Fase:")
+        st.markdown("#### Requerimientos Nutricionales Mínimos Calibrados:")
         if "Iniciador" in fase_etapa:
-            min_pb, min_em, min_lis, min_met = 22.5, 3000.0, 1.25, 0.50
+            min_pb, min_em, min_lis, min_metcis, min_tre = 23.0, 3050.0, 1.28, 0.96, 0.85
         elif "Crecimiento" in fase_etapa:
-            min_pb, min_em, min_lis, min_met = 20.0, 3150.0, 1.10, 0.45
+            min_pb, min_em, min_lis, min_metcis, min_tre = 21.0, 3150.0, 1.15, 0.88, 0.78
         else:
-            min_pb, min_em, min_lis, min_met = 18.0, 3250.0, 0.95, 0.40
+            min_pb, min_em, min_lis, min_metcis, min_tre = 19.0, 3250.0, 1.00, 0.78, 0.69
             
         st.write(f"- **Proteína Bruta Mínima:** {min_pb}%")
         st.write(f"- **Energía Metabolizable Mínima:** {min_em} kcal/kg")
         st.write(f"- **Lisina Digestible Mínima:** {min_lis}%")
-        st.write(f"- **Metionina Digestible Mínima:** {min_met}%")
+        st.write(f"- **Metionina + Cistina Digestible Mínima:** {min_metcis}%")
+        st.write(f"- **Treonina Digestible Mínima:** {min_tre}%")
 
     st.divider()
-    st.markdown("### 🌾 Inventario, Precios de Mercado e Ingredientes en México")
-    st.markdown("Modifica los precios ($/kg) según tu proveedor local y marca con un check los ingredientes **disponibles** en tu inventario:")
+    st.markdown("### 🌾 Inventario de Materias Primas e Insumos en México")
+    st.markdown("Ajusta los precios locales y selecciona los ingredientes disponibles para la optimización lineal:")
 
     ingredientes_mexico = [
-        {"Disponible": True, "Ingrediente": "Maíz Amarillo Grano", "Categoría": "Cereal / Energía", "Costo ($/kg)": 6.50, "PB (%)": 8.5, "EM (kcal/kg)": 3350, "Lisina (%)": 0.26, "Metionina (%)": 0.18},
-        {"Disponible": True, "Ingrediente": "Sorgo Grano", "Categoría": "Cereal / Energía", "Costo ($/kg)": 5.80, "PB (%)": 9.0, "EM (kcal/kg)": 3250, "Lisina (%)": 0.22, "Metionina (%)": 0.15},
-        {"Disponible": True, "Ingrediente": "Pasta de Soya (47%)", "Categoría": "Proteína Vegetal", "Costo ($/kg)": 11.50, "PB (%)": 47.0, "EM (kcal/kg)": 2230, "Lisina (%)": 2.90, "Metionina (%)": 0.65},
-        {"Disponible": True, "Ingrediente": "DDGS de Maíz", "Categoría": "Proteína / Energía", "Costo ($/kg)": 7.20, "PB (%)": 27.0, "EM (kcal/kg)": 2480, "Lisina (%)": 0.80, "Metionina (%)": 0.52},
-        {"Disponible": True, "Ingrediente": "Aceite Vegetal / Soya", "Categoría": "Grasa / Lipídico", "Costo ($/kg)": 24.00, "PB (%)": 0.0, "EM (kcal/kg)": 8800, "Lisina (%)": 0.0, "Metionina (%)": 0.0},
-        {"Disponible": True, "Ingrediente": "Carbonato de Calcio", "Categoría": "Mineral", "Costo ($/kg)": 2.50, "PB (%)": 0.0, "EM (kcal/kg)": 0, "Lisina (%)": 0.0, "Metionina (%)": 0.0},
-        {"Disponible": True, "Ingrediente": "Fosfato Bicálcico", "Categoría": "Mineral P / Ca", "Costo ($/kg)": 14.00, "PB (%)": 0.0, "EM (kcal/kg)": 0, "Lisina (%)": 0.0, "Metionina (%)": 0.0},
-        {"Disponible": True, "Ingrediente": "Sal Común (NaCl)", "Categoría": "Mineral", "Costo ($/kg)": 3.00, "PB (%)": 0.0, "EM (kcal/kg)": 0, "Lisina (%)": 0.0, "Metionina (%)": 0.0},
-        {"Disponible": True, "Ingrediente": "DL-Metionina", "Categoría": "Aminoácido", "Costo ($/kg)": 95.00, "PB (%)": 58.0, "EM (kcal/kg)": 5000, "Lisina (%)": 0.0, "Metionina (%)": 99.0},
-        {"Disponible": True, "Ingrediente": "L-Lisina HCl", "Categoría": "Aminoácido", "Costo ($/kg)": 65.00, "PB (%)": 94.0, "EM (kcal/kg)": 4120, "Lisina (%)": 78.0, "Metionina (%)": 0.0},
-        {"Disponible": True, "Ingrediente": "Premix Vitamínico-Mineral", "Categoría": "Núcleo / Micro", "Costo ($/kg)": 45.00, "PB (%)": 0.0, "EM (kcal/kg)": 0, "Lisina (%)": 0.0, "Metionina (%)": 0.0}
+        {"Disponible": True, "Ingrediente": "Maíz Amarillo Grano", "Categoría": "Cereal", "Costo ($/kg)": 6.50, "PB (%)": 8.5, "EM (kcal/kg)": 3350, "Lisina (%)": 0.26, "Met+Cis (%)": 0.35, "Treonina (%)": 0.29},
+        {"Disponible": True, "Ingrediente": "Sorgo Grano", "Categoría": "Cereal", "Costo ($/kg)": 5.80, "PB (%)": 9.0, "EM (kcal/kg)": 3250, "Lisina (%)": 0.22, "Met+Cis (%)": 0.31, "Treonina (%)": 0.28},
+        {"Disponible": True, "Ingrediente": "Pasta de Soya (47%)", "Categoría": "Proteína", "Costo ($/kg)": 11.50, "PB (%)": 47.0, "EM (kcal/kg)": 2230, "Lisina (%)": 2.90, "Met+Cis (%)": 1.38, "Treonina (%)": 1.85},
+        {"Disponible": True, "Ingrediente": "DDGS de Maíz", "Categoría": "Proteína/Energía", "Costo ($/kg)": 7.20, "PB (%)": 27.0, "EM (kcal/kg)": 2480, "Lisina (%)": 0.80, "Met+Cis (%)": 1.05, "Treonina (%)": 0.95},
+        {"Disponible": True, "Ingrediente": "Aceite Vegetal / Soya", "Categoría": "Grasa", "Costo ($/kg)": 24.00, "PB (%)": 0.0, "EM (kcal/kg)": 8800, "Lisina (%)": 0.0, "Met+Cis (%)": 0.0, "Treonina (%)": 0.0},
+        {"Disponible": True, "Ingrediente": "Carbonato de Calcio", "Categoría": "Mineral", "Costo ($/kg)": 2.50, "PB (%)": 0.0, "EM (kcal/kg)": 0, "Lisina (%)": 0.0, "Met+Cis (%)": 0.0, "Treonina (%)": 0.0},
+        {"Disponible": True, "Ingrediente": "Fosfato Bicálcico", "Categoría": "Mineral", "Costo ($/kg)": 14.00, "PB (%)": 0.0, "EM (kcal/kg)": 0, "Lisina (%)": 0.0, "Met+Cis (%)": 0.0, "Treonina (%)": 0.0},
+        {"Disponible": True, "Ingrediente": "Sal Común (NaCl)", "Categoría": "Mineral", "Costo ($/kg)": 3.00, "PB (%)": 0.0, "EM (kcal/kg)": 0, "Lisina (%)": 0.0, "Met+Cis (%)": 0.0, "Treonina (%)": 0.0},
+        {"Disponible": True, "Ingrediente": "DL-Metionina", "Categoría": "Aminoácido", "Costo ($/kg)": 95.00, "PB (%)": 58.0, "EM (kcal/kg)": 5000, "Lisina (%)": 0.0, "Met+Cis (%)": 99.0, "Treonina (%)": 0.0},
+        {"Disponible": True, "Ingrediente": "L-Lisina HCl", "Categoría": "Aminoácido", "Costo ($/kg)": 65.00, "PB (%)": 94.0, "EM (kcal/kg)": 4120, "Lisina (%)": 78.0, "Met+Cis (%)": 0.0, "Treonina (%)": 0.0},
+        {"Disponible": True, "Ingrediente": "L-Treonina", "Categoría": "Aminoácido", "Costo ($/kg)": 85.00, "PB (%)": 87.0, "EM (kcal/kg)": 3800, "Lisina (%)": 0.0, "Met+Cis (%)": 0.0, "Treonina (%)": 98.0},
+        {"Disponible": True, "Ingrediente": "Premix Vitamínico-Mineral", "Categoría": "Núcleo", "Costo ($/kg)": 45.00, "PB (%)": 0.0, "EM (kcal/kg)": 0, "Lisina (%)": 0.0, "Met+Cis (%)": 0.0, "Treonina (%)": 0.0}
     ]
 
     df_ingredientes = pd.DataFrame(ingredientes_mexico)
@@ -190,36 +191,40 @@ with tab2:
             "PB (%)": st.column_config.NumberColumn("Proteína (%)", format="%.1f%%", disabled=True),
             "EM (kcal/kg)": st.column_config.NumberColumn("Energía (kcal/kg)", format="%d", disabled=True),
             "Lisina (%)": st.column_config.NumberColumn("Lisina (%)", format="%.2f%%", disabled=True),
-            "Metionina (%)": st.column_config.NumberColumn("Metionina (%)", format="%.2f%%", disabled=True),
+            "Met+Cis (%)": st.column_config.NumberColumn("Met+Cis (%)", format="%.2f%%", disabled=True),
+            "Treonina (%)": st.column_config.NumberColumn("Treonina (%)", format="%.2f%%", disabled=True),
         },
         hide_index=True,
         use_container_width=True
     )
 
-    if st.button("🚀 Optimizar Dieta al Mínimo Costo (Algoritmo Lineal)"):
+    if st.button("🚀 Optimizar Dieta (Mínimo Costo + Proteína Ideal)"):
         if not st.session_state.autenticado:
-            st.error("⚠️ Debes iniciar sesión en la barra lateral para ejecutar el optimizador de dietas.")
+            st.error("⚠️ Debes iniciar sesión en la barra lateral para ejecutar el motor de optimización.")
         else:
             df_opt = edited_df[edited_df["Disponible"] == True].reset_index(drop=True)
             
-            if len(df_opt) < 4:
-                st.warning("⚠️ Selecciona al menos 4 ingredientes disponibles para encontrar una solución factible.")
+            if len(df_opt) < 5:
+                st.warning("⚠️ Selecciona al menos 5 ingredientes para cumplir con todas las restricciones de aminoácidos y energía.")
             else:
                 n = len(df_opt)
                 c = df_opt["Costo ($/kg)"].values
                 
+                # Matriz de restricciones (A_ub * x <= b_ub convertida a >= multiplicando por -1)
                 A_ub = np.array([
                     -df_opt["PB (%)"].values,
                     -df_opt["EM (kcal/kg)"].values,
                     -df_opt["Lisina (%)"].values,
-                    -df_opt["Metionina (%)"].values
+                    -df_opt["Met+Cis (%)"].values,
+                    -df_opt["Treonina (%)"].values
                 ])
-                b_ub = np.array([-min_pb, -min_em, -min_lis, -min_met])
+                b_ub = np.array([-min_pb, -min_em, -min_lis, -min_metcis, -min_tre])
                 
+                # Restricción de igualdad: la suma total debe ser 1 (100% o 1 kg)
                 A_eq = np.ones((1, n))
                 b_eq = np.array([1.0])
                 
-                bounds = [(0.0, 0.85) if cat not in ["Mineral", "Aminoácido", "Núcleo / Micro"] else (0.0, 0.05) for cat in df_opt["Categoría"]]
+                bounds = [(0.0, 0.85) if cat not in ["Mineral", "Aminoácido", "Núcleo"] else (0.0, 0.05) for cat in df_opt["Categoría"]]
                 
                 res = linprog(c, A_ub=A_ub, b_ub=b_ub, A_eq=A_eq, b_eq=b_eq, bounds=bounds, method="highs")
                 
@@ -230,7 +235,7 @@ with tab2:
                     df_resultado = df_opt[df_opt["Proporción (%)"] > 0.01][["Ingrediente", "Proporción (%)", "Aporte en 1 Tonelada (kg)", "Costo ($/kg)"]]
                     
                     costo_total_kg = res.fun
-                    st.success(f"✨ ¡Optimización exitosa! Costo mínimo de la dieta: **${costo_total_kg:.2f} MXN por kg** (${costo_total_kg * 1000:,.2f} MXN por tonelada).")
+                    st.success(f"✨ ¡Optimización exitosa con Proteína Ideal! Costo mínimo: **${costo_total_kg:.2f} MXN por kg** (${costo_total_kg * 1000:,.2f} MXN por tonelada).")
                     
                     st.markdown("#### 📋 Composición de la Fórmula Óptima:")
                     st.dataframe(df_resultado.style.format({
@@ -239,12 +244,12 @@ with tab2:
                         "Costo ($/kg)": "${:.2f}"
                     }), use_container_width=True)
                 else:
-                    st.error("❌ No se encontró solución factible con los ingredientes seleccionados. Habilita más materias primas para cumplir los requerimientos.")
+                    st.error("❌ No se encontró solución factible con los insumos seleccionados. Habilita más ingredientes o aminoácidos sintéticos.")
 
 # --- TAB 3: CALENDARIO DE VACUNACIÓN ---
 with tab3:
-    st.subheader("Calendario Sanitario y Programa de Vacunación")
-    st.markdown("Control automatizado de bioseguridad, inmunizaciones y aplicaciones preventivas.")
+    st.subheader("Calendario Sanitario y Programa de Bioseguridad")
+    st.markdown("Control automatizado de inmunizaciones y aplicaciones preventivas.")
     
     data_vacunas = {
         "Edad (Días)": [1, 7, 12, 18, 24],
