@@ -51,14 +51,14 @@ if "usuario_nombre" not in st.session_state:
 
 # --- PANEL IZQUIERDO (BARRA LATERAL) ---
 with st.sidebar:
-    logo_path = "watermarked_img_3159886688308430736.jpg"
+    logo_path = "watermarked_img_17480332752636885818.jpg"
     if os.path.exists(logo_path):
         st.image(logo_path, use_column_width=True)
     else:
         st.title("🐔 Engord-IA Pollo")
         
     st.markdown("### **Engord-IA Pollo**")
-    st.markdown("*«Precisión digital, máxima rentabilidad en cada ciclo.»*")
+    st.markdown("*«Inteligencia artificial que potencia la genética y engorda de tus pollos con precisión matemática.»*")
     st.divider()
     
     # 1. ACCESO Y SEGURIDAD
@@ -134,7 +134,7 @@ with st.sidebar:
 
 # --- PANTALLA PRINCIPAL ---
 st.markdown('<p class="main-header">🐔 Engord-IA Pollo: Panel de Control Inteligente</p>', unsafe_allow_html=True)
-st.markdown('<p class="sub-slogan">«Precisión digital, máxima rentabilidad en cada ciclo.»</p>', unsafe_allow_html=True)
+st.markdown('<p class="sub-slogan">«Inteligencia artificial que potencia la genética y engorda de tus pollos con precisión matemática.»</p>', unsafe_allow_html=True)
 
 if not st.session_state.autenticado:
     st.warning("⚠️ Por favor inicia sesión en la barra lateral para desbloquear todos los módulos operativos de la granja.")
