@@ -10,7 +10,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Estilos CSS personalizados para un look sofisticado y vanguardista
+# Estilos CSS personalizados
 st.markdown("""
     <style>
     .main-header {
@@ -35,7 +35,6 @@ st.markdown("""
 
 # --- BARRA LATERAL (BRANDING Y SUSCRIPCIONES) ---
 with st.sidebar:
-    # Carga segura del logotipo para evitar FileNotFoundError
     logo_path = "watermarked_img_3159886688308430736.jpg"
     if os.path.exists(logo_path):
         st.image(logo_path, use_column_width=True)
@@ -68,7 +67,7 @@ with st.sidebar:
 st.markdown('<p class="main-header">🐔 EngordIA Pollo: Panel de Control Inteligente</p>', unsafe_allow_html=True)
 st.markdown('<p class="sub-slogan">«Precisión digital, máxima rentabilidad en cada ciclo.»</p>', unsafe_allow_html=True)
 
-# Pestañas de navegación de la aplicación
+# Pestañas de navegación
 tab1, tab2, tab3, tab4 = st.tabs([
     "📊 Dashboard General", 
     "🥗 Diseño de Dietas", 
@@ -94,7 +93,7 @@ with tab1:
 # --- TAB 2: DISEÑO DE DIETAS ---
 with tab2:
     st.subheader("Módulo Asistido por IA: Formulación y Nutrición de Dietas")
-    st.markdown("Calcula y optimiza los requerimientos nutricionales según la fase de crecimiento del pollo de engorda.")
+    st.markdown("Calcula y optimiza los requerimientos nutricionales según la fase de crecimiento y la disponibilidad de insumos en México.")
     
     col_d1, col_d2 = st.columns(2)
     with col_d1:
@@ -116,9 +115,76 @@ with tab2:
             st.write("- **Proteína Bruta (Mín):** 18.0%")
             st.write("- **Energía Metabolizable:** 3,250 kcal/kg")
             st.write("- **Lisina digestible:** 0.95%")
-            
-    if st.button("Generar Fórmula Optimizada de Alimento"):
-        st.success("¡Dieta optimizada con éxito! Se han ajustado los porcentajes de maíz, pasta de soya y complejos aminoacídicos para máxima rentabilidad.")
+
+    st.divider()
+    st.markdown("### 🌾 Inventario e Ingredientes Disponibles en México")
+    st.markdown("Selecciona o deselecciona los ingredientes que tienes actualmente disponibles en la granja o con tu proveedor:")
+
+    # Lista de ingredientes comunes en la avicultura mexicana
+    ingredientes_mexico = [
+        # Cereales y fuentes energéticas
+        {"Disponible": True, "Ingrediente": "Maíz Amarillo Grano", "Categoría": "Cereal / Energía", "PB (%)": 8.5, "EM (kcal/kg)": 3350},
+        {"Disponible": True, "Ingrediente": "Sorgo Grano", "Categoría": "Cereal / Energía", "PB (%)": 9.0, "EM (kcal/kg)": 3250},
+        {"Disponible": False, "Ingrediente": "Trigo Grano", "Categoría": "Cereal / Energía", "PB (%)": 11.5, "EM (kcal/kg)": 3100},
+        {"Disponible": True, "Ingrediente": "Subproducto de Galleta / Panadería", "Categoría": "Energía", "PB (%)": 9.5, "EM (kcal/kg)": 3600},
+        {"Disponible": False, "Ingrediente": "Pulidura / Salvado de Arroz", "Categoría": "Subproducto", "PB (%)": 12.0, "EM (kcal/kg)": 2850},
+        {"Disponible": True, "Ingrediente": "Salvado de Trigo", "Categoría": "Subproducto", "PB (%)": 15.0, "EM (kcal/kg)": 2000},
+        
+        # Fuentes Proteicas Vegetales
+        {"Disponible": True, "Ingrediente": "Pasta de Soya (46-48% PB)", "Categoría": "Proteína Vegetal", "PB (%)": 47.0, "EM (kcal/kg)": 2230},
+        {"Disponible": False, "Ingrediente": "Pasta de Canola", "Categoría": "Proteína Vegetal", "PB (%)": 36.0, "EM (kcal/kg)": 2000},
+        {"Disponible": False, "Ingrediente": "Pasta de Cártamo", "Categoría": "Proteína Vegetal", "PB (%)": 24.0, "EM (kcal/kg)": 1800},
+        {"Disponible": False, "Ingrediente": "Pasta de Algodón", "Categoría": "Proteína Vegetal", "PB (%)": 41.0, "EM (kcal/kg)": 1950},
+        {"Disponible": True, "Ingrediente": "DDGS de Maíz (Granos Secos de Destilería)", "Categoría": "Proteína / Energía", "PB (%)": 27.0, "EM (kcal/kg)": 2480},
+        
+        # Fuentes Proteicas Animales y Grasas
+        {"Disponible": False, "Ingrediente": "Harina de Carne y Hueso (50%)", "Categoría": "Proteína Animal", "PB (%)": 50.0, "EM (kcal/kg)": 2300},
+        {"Disponible": False, "Ingrediente": "Harina de Pluma Hidrolizada", "Categoría": "Proteína Animal", "PB (%)": 80.0, "EM (kcal/kg)": 2800},
+        {"Disponible": False, "Ingrediente": "Harina de Pescado Nacional", "Categoría": "Proteína Animal", "PB (%)": 60.0, "EM (kcal/kg)": 2820},
+        {"Disponible": True, "Ingrediente": "Aceite Vegetal Comestible / Soya", "Categoría": "Grasa / Lipídico", "PB (%)": 0.0, "EM (kcal/kg)": 8800},
+        {"Disponible": True, "Ingrediente": "Grasa Amarilla / Tallow", "Categoría": "Grasa / Lipídico", "PB (%)": 0.0, "EM (kcal/kg)": 8400},
+        
+        # Minerales y Aminoácidos Sintéticos
+        {"Disponible": True, "Ingrediente": "DL-Metionina", "Categoría": "Aminoácido Sintético", "PB (%)": 58.0, "EM (kcal/kg)": 5000},
+        {"Disponible": True, "Ingrediente": "L-Lisina HCl", "Categoría": "Aminoácido Sintético", "PB (%)": 94.0, "EM (kcal/kg)": 4120},
+        {"Disponible": True, "Ingrediente": "L-Treonina", "Categoría": "Aminoácido Sintético", "PB (%)": 72.0, "EM (kcal/kg)": 3600},
+        {"Disponible": True, "Ingrediente": "Carbonato de Calcio (Piedra Caliza)", "Categoría": "Mineral Calcio", "PB (%)": 0.0, "EM (kcal/kg)": 0},
+        {"Disponible": True, "Ingrediente": "Fosfato Dicálcico / Monocálcico", "Categoría": "Mineral P / Ca", "PB (%)": 0.0, "EM (kcal/kg)": 0},
+        {"Disponible": True, "Ingrediente": "Sal Común (NaCl)", "Categoría": "Mineral Sodio", "PB (%)": 0.0, "EM (kcal/kg)": 0},
+        {"Disponible": True, "Ingrediente": "Premix de Vitaminas y Minerales Traza", "Categoría": "Núcleo / Micro", "PB (%)": 0.0, "EM (kcal/kg)": 0},
+        {"Disponible": True, "Ingrediente": "Pigmentante Marigold / Flor de Cempasúchil", "Categoría": "Pigmentante", "PB (%)": 0.0, "EM (kcal/kg)": 0}
+    ]
+
+    df_ingredientes = pd.DataFrame(ingredientes_mexico)
+
+    # Editor de datos interactivo con checkboxes en la columna "Disponible"
+    edited_df = st.data_editor(
+        df_ingredientes,
+        column_config={
+            "Disponible": st.column_config.CheckboxColumn(
+                "Disponible",
+                help="Marca esta casilla si el ingrediente está disponible en tus existencias",
+                default=False,
+            ),
+            "Ingrediente": st.column_config.TextColumn("Ingrediente / Materia Prima", disabled=True),
+            "Categoría": st.column_config.TextColumn("Categoría", disabled=True),
+            "PB (%)": st.column_config.NumberColumn("Proteína Bruta (%)", format="%.1f%%", disabled=True),
+            "EM (kcal/kg)": st.column_config.NumberColumn("Energía Met. (kcal/kg)", format="%d", disabled=True),
+        },
+        disabled=["Ingrediente", "Categoría", "PB (%)", "EM (kcal/kg)"],
+        hide_index=True,
+        use_container_width=True
+    )
+
+    # Filtrar selección del usuario
+    ingredientes_seleccionados = edited_df[edited_df["Disponible"] == True]["Ingrediente"].tolist()
+    st.caption(f"📋 **Ingredientes seleccionados para la dieta:** {len(ingredientes_seleccionados)} de {len(df_ingredientes)} materias primas.")
+
+    if st.button("Generar Fórmula Optimizada con Ingredientes Seleccionados"):
+        if len(ingredientes_seleccionados) < 3:
+            st.warning("⚠️ Selecciona al menos 3 ingredientes (incluyendo maíz/sorgo, pasta de soya y fuente mineral) para balancear la ración.")
+        else:
+            st.success(f"¡Dieta optimizada con éxito usando los {len(ingredientes_seleccionados)} ingredientes seleccionados en inventario!")
 
 # --- TAB 3: CALENDARIO DE VACUNACIÓN ---
 with tab3:
