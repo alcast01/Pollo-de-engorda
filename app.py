@@ -6,13 +6,13 @@ from scipy.optimize import linprog
 
 # Configuración inicial de la página
 st.set_page_config(
-    page_title="EngordIA Pollo | Inteligencia Avícola",
+    page_title="Engord-IA Pollo | Inteligencia Avícola",
     page_icon="🐔",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Estilos CSS personalizados
+# Estilos CSS personalizados para un look vanguardista y sofisticado
 st.markdown("""
     <style>
     .main-header {
@@ -32,24 +32,65 @@ st.markdown("""
         border-radius: 10px;
         border: 1px solid #2D3748;
     }
+    .credits-text {
+        font-size: 0.75rem;
+        color: #E2E8F0;
+        font-weight: bold;
+        text-align: center;
+        margin-top: 15px;
+        line-height: 1.4;
+    }
     </style>
 """, unsafe_allow_html=True)
 
-# --- BARRA LATERAL (BRANDING Y SUSCRIPCIONES) ---
+# Inicializar estado de sesión para autenticación
+if "autenticado" not in st.session_state:
+    st.session_state.autenticado = False
+if "usuario_nombre" not in st.session_state:
+    st.session_state.usuario_nombre = ""
+
+# --- BARRA LATERAL (BRANDING, AUTENTICACIÓN Y SUSCRIPCIONES SEPARADAS) ---
 with st.sidebar:
     logo_path = "watermarked_img_3159886688308430736.jpg"
     if os.path.exists(logo_path):
         st.image(logo_path, use_column_width=True)
     else:
-        st.title("🐔 EngordIA Pollo")
+        st.title("🐔 Engord-IA Pollo")
         
-    st.markdown("### **EngordIA Pollo**")
+    st.markdown("### **Engord-IA Pollo**")
     st.markdown("*«Precisión digital, máxima rentabilidad en cada ciclo.»*")
     st.divider()
     
-    st.subheader("💳 Selección de Suscripción")
+    # MÓDULO 1: AUTENTICACIÓN Y CREDENCIALES DE USUARIO (SEPARADO)
+    st.subheader("🔐 Acceso y Seguridad")
+    if not st.session_state.autenticado:
+        with st.form("form_login"):
+            correo_input = st.text_input("Correo electrónico")
+            password_input = st.text_input("Contraseña / Factor de Autenticación", type="password")
+            btn_login = st.form_submit_button("Iniciar Sesión")
+            
+            if btn_login:
+                if correo_input and password_input:
+                    st.session_state.autenticado = True
+                    # Extraer un nombre base del correo o usar genérico
+                    st.session_state.usuario_nombre = correo_input.split('@')[0].capitalize()
+                    st.success(f"¡Bienvenido, {st.session_state.usuario_nombre}!")
+                    st.rerun()
+                else:
+                    st.warning("Por favor ingresa correo y contraseña.")
+    else:
+        st.success(f"Sesión activa: **{st.session_state.usuario_nombre}**")
+        if st.button("Cerrar Sesión"):
+            st.session_state.autenticado = False
+            st.session_state.usuario_nombre = ""
+            st.rerun()
+
+    st.divider()
+    
+    # MÓDULO 2: PLANES DE SUSCRIPCIÓN Y LICENCIAMIENTO (SEPARADO DE LA AUTENTICACIÓN)
+    st.subheader("💳 Planes de Suscripción")
     plan = st.selectbox(
-        "Elige tu plan de licenciamiento:",
+        "Selecciona tu esquema de licenciamiento:",
         ["Plan Trimestral (3 Meses)", "Plan Semestral (6 Meses)", "Plan Anual (12 Meses - Recomendado)"]
     )
     
@@ -61,13 +102,16 @@ with st.sidebar:
         st.success("Inversión: Acceso total e ilimitado todo el año con analítica predictiva.")
         
     st.divider()
-    st.markdown("### ℹ️ Créditos")
-    st.markdown("**Desarrollado para:** Productores Avícolas de Precisión")
-    st.markdown("**Versión:** 1.0.0-PRO")
+    
+    # CRÉDITOS OFICIALES (EN MAYÚSCULAS)
+    st.markdown('<p class="credits-text">DESARROLLADA Y CREADA POR: DR. ALEJANDRO CASTAÑEDA CORREA</p>', unsafe_allow_html=True)
 
 # --- PANTALLA PRINCIPAL ---
-st.markdown('<p class="main-header">🐔 EngordIA Pollo: Panel de Control Inteligente</p>', unsafe_allow_html=True)
+st.markdown('<p class="main-header">🐔 Engord-IA Pollo: Panel de Control Inteligente</p>', unsafe_allow_html=True)
 st.markdown('<p class="sub-slogan">«Precisión digital, máxima rentabilidad en cada ciclo.»</p>', unsafe_allow_html=True)
+
+if not st.session_state.autenticado:
+    st.warning("⚠️ Por favor inicia sesión en la barra lateral para desbloquear todos los módulos operativos de la granja.")
 
 # Pestañas de navegación
 tab1, tab2, tab3, tab4 = st.tabs([
@@ -92,7 +136,7 @@ with tab1:
         
     st.info("💡 **Recomendación de IA:** Las condiciones de temperatura en el galpón 2 son óptimas. Se sugiere incrementar un 2% la densidad energética de la dieta para acelerar la ganancia de peso final.")
 
-# --- TAB 2: DISEÑO Y OPTIMIZACIÓN DE DIETAS (LEAST-COST FEED FORMULATION) ---
+# --- TAB 2: DISEÑO Y OPTIMIZACIÓN DE DIETAS (LEAST-COST) ---
 with tab2:
     st.subheader("Módulo de Formulación de Dietas al Mínimo Costo (Programación Lineal)")
     st.markdown("El motor de optimización calcula las proporciones exactas de cada ingrediente disponible para satisfacer los requerimientos nutricionales al menor costo por kilo de alimento.")
@@ -118,9 +162,8 @@ with tab2:
 
     st.divider()
     st.markdown("### 🌾 Inventario, Precios de Mercado e Ingredientes en México")
-    st.markdown("Modifica los precios ($/kg) según tu proveedor local y marca con un check los ingredientes **disponibles** que deseas incluir en la optimización:")
+    st.markdown("Modifica los precios ($/kg) según tu proveedor local y marca con un check los ingredientes **disponibles** en tu inventario:")
 
-    # Base de datos de ingredientes con costos estimados en México (MXN)
     ingredientes_mexico = [
         {"Disponible": True, "Ingrediente": "Maíz Amarillo Grano", "Categoría": "Cereal / Energía", "Costo ($/kg)": 6.50, "PB (%)": 8.5, "EM (kcal/kg)": 3350, "Lisina (%)": 0.26, "Metionina (%)": 0.18},
         {"Disponible": True, "Ingrediente": "Sorgo Grano", "Categoría": "Cereal / Energía", "Costo ($/kg)": 5.80, "PB (%)": 9.0, "EM (kcal/kg)": 3250, "Lisina (%)": 0.22, "Metionina (%)": 0.15},
@@ -137,7 +180,6 @@ with tab2:
 
     df_ingredientes = pd.DataFrame(ingredientes_mexico)
 
-    # Editor interactivo para ajustar costos y disponibilidad
     edited_df = st.data_editor(
         df_ingredientes,
         column_config={
@@ -155,52 +197,49 @@ with tab2:
     )
 
     if st.button("🚀 Optimizar Dieta al Mínimo Costo (Algoritmo Lineal)"):
-        # Filtrar solo ingredientes marcados como disponibles
-        df_opt = edited_df[edited_df["Disponible"] == True].reset_index(drop=True)
-        
-        if len(df_opt) < 4:
-            st.warning("⚠️ Selecciona al menos 4 ingredientes disponibles (incluyendo energía, proteína y aminoácidos) para encontrar una solución factible.")
+        if not st.session_state.autenticado:
+            st.error("⚠️ Debes iniciar sesión en la barra lateral para ejecutar el optimizador de dietas.")
         else:
-            n = len(df_opt)
-            c = df_opt["Costo ($/kg)"].values  # Coeficientes de costos a minimizar
+            df_opt = edited_df[edited_df["Disponible"] == True].reset_index(drop=True)
             
-            # Restricciones de desigualdad (A_ub * x <= b_ub) -> Convertidas a >= multiplicando por -1
-            A_ub = np.array([
-                -df_opt["PB (%)"].values,          # Proteína mínima
-                -df_opt["EM (kcal/kg)"].values,     # Energía mínima
-                -df_opt["Lisina (%)"].values,       # Lisina mínima
-                -df_opt["Metionina (%)"].values     # Metionina mínima
-            ])
-            b_ub = np.array([-min_pb, -min_em, -min_lis, -min_met])
-            
-            # Restricción de igualdad: la suma de las proporciones debe ser exactamente 1 (100% o 1 kg)
-            A_eq = np.ones((1, n))
-            b_eq = np.array([1.0])
-            
-            # Límites para cada ingrediente (0% a 100%, con topes lógicos opcionales)
-            bounds = [(0.0, 0.85) if cat not in ["Mineral", "Aminoácido", "Núcleo / Micro"] else (0.0, 0.05) for cat in df_opt["Categoría"]]
-            
-            # Ejecución del optimizador lineal (SciPy Simplex / Highs)
-            res = linprog(c, A_ub=A_ub, b_ub=b_ub, A_eq=A_eq, b_eq=b_eq, bounds=bounds, method="highs")
-            
-            if res.success:
-                df_opt["Proporción (%)"] = res.x * 100
-                df_opt["Aporte en 1 Tonelada (kg)"] = res.x * 1000
-                
-                # Filtrar solo los ingredientes con participación > 0.01%
-                df_resultado = df_opt[df_opt["Proporción (%)"] > 0.01][["Ingrediente", "Proporción (%)", "Aporte en 1 Tonelada (kg)", "Costo ($/kg)"]]
-                
-                costo_total_kg = res.fun
-                st.success(f"✨ ¡Optimización exitosa! Costo mínimo de la dieta: **${costo_total_kg:.2f} MXN por kg** (${costo_total_kg * 1000:,.2f} MXN por tonelada).")
-                
-                st.markdown("#### 📋 Composición de la Rómula Óptima:")
-                st.dataframe(df_resultado.style.format({
-                    "Proporción (%)": "{:.2f}%",
-                    "Aporte en 1 Tonelada (kg)": "{:.2f} kg",
-                    "Costo ($/kg)": "${:.2f}"
-                }), use_container_width=True)
+            if len(df_opt) < 4:
+                st.warning("⚠️ Selecciona al menos 4 ingredientes disponibles para encontrar una solución factible.")
             else:
-                st.error("❌ No se encontró una solución factible con los ingredientes seleccionados y los precios actuales. Intenta habilitar más materias primas (como pasta de soya o aminoácidos sintéticos) para cumplir con los requerimientos estrictos de la fase.")
+                n = len(df_opt)
+                c = df_opt["Costo ($/kg)"].values
+                
+                A_ub = np.array([
+                    -df_opt["PB (%)"].values,
+                    -df_opt["EM (kcal/kg)"].values,
+                    -df_opt["Lisina (%)"].values,
+                    -df_opt["Metionina (%)"].values
+                ])
+                b_ub = np.array([-min_pb, -min_em, -min_lis, -min_met])
+                
+                A_eq = np.ones((1, n))
+                b_eq = np.array([1.0])
+                
+                bounds = [(0.0, 0.85) if cat not in ["Mineral", "Aminoácido", "Núcleo / Micro"] else (0.0, 0.05) for cat in df_opt["Categoría"]]
+                
+                res = linprog(c, A_ub=A_ub, b_ub=b_ub, A_eq=A_eq, b_eq=b_eq, bounds=bounds, method="highs")
+                
+                if res.success:
+                    df_opt["Proporción (%)"] = res.x * 100
+                    df_opt["Aporte en 1 Tonelada (kg)"] = res.x * 1000
+                    
+                    df_resultado = df_opt[df_opt["Proporción (%)"] > 0.01][["Ingrediente", "Proporción (%)", "Aporte en 1 Tonelada (kg)", "Costo ($/kg)"]]
+                    
+                    costo_total_kg = res.fun
+                    st.success(f"✨ ¡Optimización exitosa! Costo mínimo de la dieta: **${costo_total_kg:.2f} MXN por kg** (${costo_total_kg * 1000:,.2f} MXN por tonelada).")
+                    
+                    st.markdown("#### 📋 Composición de la Fórmula Óptima:")
+                    st.dataframe(df_resultado.style.format({
+                        "Proporción (%)": "{:.2f}%",
+                        "Aporte en 1 Tonelada (kg)": "{:.2f} kg",
+                        "Costo ($/kg)": "${:.2f}"
+                    }), use_container_width=True)
+                else:
+                    st.error("❌ No se encontró solución factible con los ingredientes seleccionados. Habilita más materias primas para cumplir los requerimientos.")
 
 # --- TAB 3: CALENDARIO DE VACUNACIÓN ---
 with tab3:
@@ -246,7 +285,7 @@ with tab4:
         costo_total_estimado = costo_pollo_bb + (1.62 * 2.80 * costo_alimento_kg) + 4.0
         margen_estimado = precio_venta_mercado - costo_total_estimado
         st.metric("Costo Estimado por Kilo", f"${costo_total_estimado:.2f}")
-        st.metric("Margen Neto Proyectado", f"${margen_estimado:.2f} per kg", "Rentabilidad Alta")
+        st.metric("Margen Neto Proyectado", f"${margen_estimado:.2f} por kg", "Rentabilidad Alta")
         
     if st.button("Exportar Reporte Financiero para Comercialización"):
         st.balloons()
