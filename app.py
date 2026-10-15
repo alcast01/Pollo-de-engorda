@@ -32,7 +32,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- BARRA LATERAL (BRANDING Ys SUSCRIPCIONES) ---
+# --- BARRA LATERAL (BRANDING Y SUSCRIPCIONES) ---
 with st.sidebar:
     st.image("watermarked_img_3159886688308430736.jpg", use_column_width=True)
     st.markdown("### **EngordIA Pollo**")
@@ -118,10 +118,10 @@ with tab3:
     st.subheader("Calendario Sanitario y Programa de Vacunación")
     st.markdown("Control automatizado de bioseguridad, inmunizaciones y aplicaciones preventivas.")
     
-    # Tabla de ejemplo de calendario de vacunación
+    # Tabla de ejemplo de calendario de vacunación (Corregida)
     data_vacunas = {
         "Edad (Días)": [1, 7, 12, 18, 24],
-        "Via de Aplicación": [\"Spray / Ocular\", \"Agua de Bebida\", \"Subcutánea / Ocular\", \"Agua de Bebida\", \"Campo / Monitoreo\"],
+        "Vía de Aplicación": ["Spray / Ocular", "Agua de Bebida", "Subcutánea / Ocular", "Agua de Bebida", "Campo / Monitoreo"],
         "Enfermedad / Biológico": ["Newcastle + Bronquitis Infecciosa", "Gumboro (Cepas intermedias)", "Newcastle (Clon)", "Gumboro (Boost)", "Evaluación de Títulos Serológicos"],
         "Estado": ["Completado", "Programado", "Pendiente", "Pendiente", "Pendiente"]
     }
@@ -155,8 +155,7 @@ with tab4:
         mortalidad_estimada = st.slider("Mortalidad Esperada (%)", 1.0, 10.0, 3.5)
     with col_c3:
         st.markdown("#### 📈 Estimación de Retorno")
-        # Cálculos de simulación rápida
-        costo_total_estimado = costo_pollo_bb + (1.62 * 2.80 * costo_alimento_kg) + 4.0  # Fórmula simplificada de costos
+        costo_total_estimado = costo_pollo_bb + (1.62 * 2.80 * costo_alimento_kg) + 4.0
         margen_estimado = precio_venta_mercado - costo_total_estimado
         st.metric("Costo Estimado por Kilo", f"${costo_total_estimado:.2f}")
         st.metric("Margen Neto Proyectado", f"${margen_estimado:.2f} por kg", "Rentabilidad Alta")
