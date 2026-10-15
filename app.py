@@ -86,7 +86,7 @@ with st.sidebar:
 
     st.divider()
     
-    # 2. CALIBRACIÓN AVANZADA DE PRODUCCIÓN Y RENDIMIENTO (ORGANIZADA POR GRUPOS)
+    # 2. CALIBRACIÓN AVANZADA DE PRODUCCIÓN Y RENDIMIENTO
     st.subheader("⚙️ Calibración de Granja")
     st.markdown("Parámetros clave para rendimiento y control de costos:")
     
@@ -129,7 +129,7 @@ with st.sidebar:
         
     st.divider()
     
-    # CRÉDITOS OFICIALES (EN MAYÚSCULAS)
+    # CRÉDITOS OFICIALES
     st.markdown('<p class="credits-text">DESARROLLADA Y CREADA POR: DR. ALEJANDRO CASTAÑEDA CORREA</p>', unsafe_allow_html=True)
 
 # --- PANTALLA PRINCIPAL ---
