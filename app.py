@@ -12,7 +12,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Estilos CSS personalizados para un look vanguardista y sofisticado
+# Estilos CSS personalizados para un look vanguardista y sophisticated
 st.markdown("""
     <style>
     .main-header {
@@ -155,27 +155,33 @@ if not st.session_state.autenticado:
         with col_p1:
             st.markdown("#### 🥉 Plan Trimestral")
             st.markdown("**Duración:** 3 Meses")
-            st.markdown("* Ideal para evaluar un ciclo completo de engorda.
+            st.markdown("""
+* Ideal para evaluar un ciclo completo de engorda.
 * Formulación lineal básica de dietas.
-* Registro y seguimiento de calendario sanitario.")
+* Registro y seguimiento de calendario sanitario.
+""")
             if st.button("Elegir Plan Trimestral", use_container_width=True):
                 st.success("¡Has seleccionado el Plan Trimestral! Procede a la pestaña de Acceso y Seguridad para ingresar.")
 
         with col_p2:
             st.markdown("#### 🥈 Plan Semestral")
             st.markdown("**Duración:** 6 Meses")
-            st.markdown("* Optimización avanzada para 2 ciclos consecutivos.
+            st.markdown("""
+* Optimización avanzada para 2 ciclos consecutivos.
 * Recomendaciones predictivas de IA.
-* Análisis y proyecciones de conversión (ICA).")
+* Análisis y proyecciones de conversión (ICA).
+""")
             if st.button("Elegir Plan Semestral", use_container_width=True):
                 st.success("¡Has seleccionado el Plan Semestral! Procede a la pestaña de Acceso y Seguridad para ingresar.")
 
         with col_p3:
             st.markdown("#### 🥇 Plan Anual (Recomendado)")
             st.markdown("**Duración:** 12 Meses")
-            st.markdown("* Acceso total e ilimitado todo el año.
+            st.markdown("""
+* Acceso total e ilimitado todo el año.
 * Motores predictivos de ganancia diaria de peso.
-* Calibración multi-galpón y soporte prioritario.")
+* Calibración multi-galpón y soporte prioritario.
+""")
             if st.button("Elegir Plan Anual", use_container_width=True):
                 st.success("¡Has seleccionado el Plan Anual! Procede a la pestaña de Acceso y Seguridad para ingresar.")
 
