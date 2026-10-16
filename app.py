@@ -4,13 +4,19 @@ import numpy as np
 import os
 from scipy.optimize import linprog
 
-# Inicializar estado de sesión para autenticación
+# Inicializar estado de sesión para autenticación y 2FA
 if "autenticado" not in st.session_state:
     st.session_state.autenticado = False
 if "usuario_nombre" not in st.session_state:
     st.session_state.usuario_nombre = ""
+if "selected_plan" not in st.session_state:
+    st.session_state.selected_plan = None
+if "auth_stage" not in st.session_state:
+    st.session_state.auth_stage = "planes"  # "planes", "login", "2fa_verify"
+if "mock_code" not in st.session_state:
+    st.mock_code = "1234"
 
-# Configuración dinámica de la página según el estado de autenticación
+# Configuración de la página
 st.set_page_config(
     page_title="Engord-IA Pollo | Inteligencia Avícola",
     page_icon="🐔",
@@ -65,9 +71,12 @@ if st.session_state.autenticado:
             
         st.divider()
         st.success(f"Sesión activa: **{st.session_state.usuario_nombre}**")
-        if st.button("🔴 Cerrar Sesión", use_container_width=True):
+        st.info(f"Plan Activo: {st.session_state.selected_plan}")
+        if st.button("🔴 Cerrar Sesión", use_column_width=True):
             st.session_state.autenticado = False
             st.session_state.usuario_nombre = ""
+            st.session_state.auth_stage = "planes"
+            st.session_state.selected_plan = None
             st.rerun()
             
         st.divider()
@@ -111,7 +120,7 @@ else:
 
 
 # ==============================================================================
-# PÁGINA DE INICIO (LANDING PAGE - SIN PANEL LATERAL)
+# PÁGINA DE INICIO (LANDING PAGE - FLUJO GUIADO DE SUSCRIPCIÓN -> AUTH -> 2FA)
 # ==============================================================================
 if not st.session_state.autenticado:
     # Cabecera Principal
@@ -125,37 +134,9 @@ if not st.session_state.autenticado:
 
     st.divider()
 
-    # Pestañas independientes de Acceso y Suscripción
-    tab_acceso, tab_suscripciones = st.tabs([
-        "🔐 Acceso y Seguridad", 
-        "💳 Planes de Suscripción y Licenciamiento"
-    ])
-
-    # --- PESTAÑA 1: ACCESO Y SEGURIDAD (FORMULARIO CENTRADO) ---
-    with tab_acceso:
-        col_left, col_center, col_right = st.columns([1, 2, 1])
-        
-        with col_center:
-            st.markdown("<h3 style='text-align: center;'>🔑 Autenticación de Usuario</h3>", unsafe_allow_html=True)
-            st.markdown("<p style='text-align: center;'>Ingresa tus credenciales para acceder al panel operativo de la aplicación:</p>", unsafe_allow_html=True)
-            
-            with st.form("form_login_pestana"):
-                correo_input = st.text_input("Correo electrónico / Usuario")
-                password_input = st.text_input("Contraseña / Factor de Autenticación", type="password")
-                btn_login = st.form_submit_button("🚀 Iniciar Sesión en Engord-IA Pollo", use_container_width=True)
-                
-                if btn_login:
-                    if correo_input and password_input:
-                        st.session_state.autenticado = True
-                        st.session_state.usuario_nombre = correo_input.split('@')[0].capitalize()
-                        st.success(f"¡Autenticación exitosa! Bienvenido, {st.session_state.usuario_nombre}.")
-                        st.rerun()
-                    else:
-                        st.error("⚠️ Por favor ingresa tu correo y contraseña.")
-
-    # --- PESTAÑA 2: PLANES DE SUSCRIPCIÓN Y LICENCIAMIENTO ---
-    with tab_suscripciones:
-        st.markdown("### 📋 Inversión Inteligente para tu Producción Avícola")
+    # ETAPA 1: PLANES DE SUSCRIPCIÓN (PRIMERO)
+    if st.session_state.auth_stage == "planes":
+        st.markdown("### 📋 Paso 1: Selecciona tu Plan de Suscripción")
         st.markdown("Asegura el máximo rendimiento zootécnico y protege tus márgenes frente a la volatilidad de las materias primas:")
         
         col_p1, col_p2, col_p3 = st.columns(3)
@@ -169,8 +150,10 @@ if not st.session_state.autenticado:
 * Formulación lineal básica de dietas por mínimo costo.
 * Registro y seguimiento de calendario sanitario.
 """)
-            if st.button("Elegir Plan Trimestral", use_container_width=True):
-                st.success("¡Has seleccionado el Plan Trimestral! Procede a la pestaña de Acceso y Seguridad para ingresar.")
+            if st.button("Elegir Plan Trimestral", use_column_width=True):
+                st.session_state.selected_plan = "Plan Trimestral (3 Meses)"
+                st.session_state.auth_stage = "login"
+                st.rerun()
 
         with col_p2:
             st.markdown("#### 🥈 Plan Semestral")
@@ -181,8 +164,10 @@ if not st.session_state.autenticado:
 * Optimización avanzada para 2 ciclos consecutivos.
 * Recomendaciones predictivas de IA y control de ICA.
 """)
-            if st.button("Elegir Plan Semestral", use_container_width=True):
-                st.success("¡Has seleccionado el Plan Semestral! Procede a la pestaña de Acceso y Seguridad para ingresar.")
+            if st.button("Elegir Plan Semestral", use_column_width=True):
+                st.session_state.selected_plan = "Plan Semestral (6 Meses)"
+                st.session_state.auth_stage = "login"
+                st.rerun()
 
         with col_p3:
             st.markdown("#### 🥇 Plan Anual (PRO - Recomendado)")
@@ -194,8 +179,61 @@ if not st.session_state.autenticado:
 * **Máxima Rentabilidad Garantizada:** Control total en múltiples ciclos de producción, minimizando el costo por kilo producido y maximizando tu conversión alimenticia (ICA).
 * **Soporte Prioritario y Actualizaciones VIP:** Acceso anticipado a todos los módulos de analítica predictiva del Dr. Alejandro Castañeda Correa.
 """)
-            if st.button("🚀 Asegurar Licencia Anual", use_container_width=True):
-                st.success("¡Excelente decisión! El Plan Anual asegurará la rentabilidad máxima de tu granja durante todo el año. Procede a la pestaña de Acceso y Seguridad.")
+            if st.button("🚀 Asegurar Licencia Anual", use_column_width=True):
+                st.session_state.selected_plan = "Plan Anual (12 Meses)"
+                st.session_state.auth_stage = "login"
+                st.rerun()
+
+    # ETAPA 2: AUTENTICACIÓN DE USUARIO (REDESIRECCIÓN AUTOMÁTICA TRAS ELEGIR PLAN)
+    elif st.session_state.auth_stage == "login":
+        col_left, col_center, col_right = st.columns([1, 2, 1])
+        with col_center:
+            st.success(f"✅ Plan seleccionado: **{st.session_state.selected_plan}**")
+            if st.button("🔄 Cambiar de Plan"):
+                st.session_state.auth_stage = "planes"
+                st.rerun()
+
+            st.markdown("<h3 style='text-align: center;'>🔑 Paso 2: Autenticación de Usuario</h3>", unsafe_allow_html=True)
+            st.markdown("<p style='text-align: center;'>Ingresa tus credenciales para continuar con el doble factor de autenticación (2FA):</p>", unsafe_allow_html=True)
+            
+            with st.form("form_login_pestana"):
+                correo_input = st.text_input("Correo electrónico / Usuario")
+                password_input = st.text_input("Contraseña", type="password")
+                btn_next = st.form_submit_button("Continuar a Verificación 2FA ➔", use_container_width=True)
+                
+                if btn_next:
+                    if correo_input and password_input:
+                        st.session_state.temp_user = correo_input.split('@')[0].capitalize()
+                        # Generar código aleatorio de 4 dígitos para 2FA
+                        st.session_state.mock_code = str(np.random.randint(1000, 9999))
+                        st.session_state.auth_stage = "2fa_verify"
+                        st.rerun()
+                    else:
+                        st.error("⚠️ Por favor ingresa tu correo y contraseña.")
+
+    # ETAPA 3: DOBLE FACTOR DE AUTENTICACIÓN (2FA)
+    elif st.session_state.auth_stage == "2fa_verify":
+        col_left, col_center, col_right = st.columns([1, 2, 1])
+        with col_center:
+            st.markdown("<h3 style='text-align: center;'>🔒 Paso 3: Doble Factor de Autenticación (2FA)</h3>", unsafe_allow_html=True)
+            st.info(f"✉️ Hemos enviado un código de verificación de 4 dígitos a tu correo y mensaje de texto registrados.\n\n*(Código de simulación para pruebas: **{st.session_state.mock_code}**)*")
+            
+            with st.form("form_2fa"):
+                codigo_ingresado = st.text_input("Ingresa el código de 4 dígitos", max_chars=4)
+                btn_verify = st.form_submit_button("Verificar Código e Ingresar 🚀", use_container_width=True)
+                
+                if btn_verify:
+                    if codigo_ingresado == st.session_state.mock_code:
+                        st.session_state.autenticado = True
+                        st.session_state.usuario_nombre = st.session_state.temp_user if "temp_user" in st.session_state else "Usuario"
+                        st.success("¡Autenticación 2FA completada con éxito!")
+                        st.rerun()
+                    else:
+                        st.error("❌ Código incorrecto. Por favor intenta de nuevo.")
+
+            if st.button("⬅️ Regresar a Credenciales"):
+                st.session_state.auth_stage = "login"
+                st.rerun()
 
     st.divider()
     st.markdown('<p class="credits-text">DESARROLLADA Y CREADA POR: DR. ALEJANDRO CASTAÑEDA CORREA</p>', unsafe_allow_html=True)
