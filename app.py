@@ -114,7 +114,7 @@ if not st.session_state.autenticado:
             st.image(logo_path, use_column_width=True)
     with col_txt_main:
         st.markdown('<p class="main-header">🐔 Engord-IA Pollo: Plataforma Avícola de Precisión</p>', unsafe_allow_html=True)
-        st.markdown('<p class="sub-slogan">«Inteligencia artificial que optimiza la nutrición, maximiza la ganancia de peso y blinda la rentabilidad de tus pollos.»</p>', unsafe_allow_html=True)
+        st.markdown('<p class="sub-slogan">«Inteligencia artificial que potencia la nutrición, optimiza la ganancia de peso y blinda la rentabilidad de tus pollos con precisión matemática.»</p>', unsafe_allow_html=True)
 
     st.divider()
 
@@ -200,7 +200,7 @@ else:
             st.image(logo_path, use_column_width=True)
     with col_txt_app:
         st.markdown('<p class="main-header">🐔 Engord-IA Pollo: Panel de Control Inteligente</p>', unsafe_allow_html=True)
-        st.markdown('<p class="sub-slogan">«Inteligencia artificial que optimiza la nutrición, maximiza la ganancia de peso y blinda la rentabilidad de tus pollos.»</p>', unsafe_allow_html=True)
+        st.markdown('<p class="sub-slogan">«Inteligencia artificial que potencia la nutrición, optimiza la ganancia de peso y blinda la rentabilidad de tus pollos con precisión matemática.»</p>', unsafe_allow_html=True)
 
     st.divider()
 
