@@ -63,6 +63,74 @@ st.markdown("""
 logo_path = "watermarked_img_17480332752636885818.jpg"
 
 # ==============================================================================
+# FUNCIÓN PARA GENERAR PDF NATIVO EN PYTHON PURO
+# ==============================================================================
+def generar_reporte_pdf_nativo(linea, aves, peso_meta, precio_venta, co2, nit):
+    stream_text = f"""BT
+/F1 16 Tf
+50 730 Td
+(ENGORD-IA POLLO - REPORTE EJECUTIVO CERTIFICADO) Tj
+0 -20 Td
+/F1 10 Tf
+(Plataforma de Inteligencia Avicola y Precision Matematica) Tj
+0 -35 Td
+/F1 12 Tf
+(1. RESUMEN ZOOTECNICO DEL LOTE) Tj
+0 -18 Td
+/F1 10 Tf
+(- Linea Genetica: {linea}) Tj
+0 -15 Td
+(- Aves Iniciales: {aves:,}) Tj
+0 -15 Td
+(- Peso Meta Comercial: {peso_meta} kg) Tj
+0 -30 Td
+/F1 12 Tf
+(2. INDICADORES ECONOMICOS Y SUSTENTABILIDAD) Tj
+0 -18 Td
+/F1 10 Tf
+(- Precio de Venta Configurado: ${precio_venta:.2f} MXN / kg) Tj
+0 -15 Td
+(- Huella de Carbono: {co2:.2f} Ton CO2e) Tj
+0 -15 Td
+(- Excrecion de Nitrogeno: {nit:,.1f} kg N) Tj
+0 -15 Td
+(- Estatus de Certificacion: Apto para Exportacion Verde) Tj
+0 -40 Td
+/F1 9 Tf
+(Desarrollado y creado por: DR. ALEJANDRO CASTAÑEDA CORREA) Tj
+ET
+"""
+    stream_bytes = stream_text.encode("latin-1", errors="ignore")
+    length = len(stream_bytes)
+    
+    pdf = bytearray()
+    pdf.extend(b"%PDF-1.4\n")
+    
+    o1 = b"1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n"
+    o2 = b"2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n"
+    o3 = b"3 0 obj\n<< /Type /Page /Parent 2 0 R /Resources << /Font << /F1 4 0 R >> >> /MediaBox [0 0 612 792] /Contents 5 0 R >>\nendobj\n"
+    o4 = b"4 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>\nendobj\n"
+    o5 = b"5 0 obj\n<< /Length " + str(length).encode() + b" >>\nstream\n" + stream_bytes + b"\nendstream\nendobj\n"
+    
+    objects = [o1, o2, o3, o4, o5]
+    offsets = [len(pdf)]
+    for obj in objects:
+        offsets.append(offsets[-1] + len(obj))
+        pdf.extend(obj)
+        
+    xref_offset = len(pdf)
+    xref = [b"xref\n0 6\n0000000000 65535 f \n"]
+    for off in offsets[:-1]:
+        xref.append(f"{off:010d} 00000 n \n".encode())
+        
+    pdf.extend(b"".join(xref))
+    trailer = f"trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n{xref_offset}\n%%EOF".encode()
+    pdf.extend(trailer)
+    
+    return bytes(pdf)
+
+
+# ==============================================================================
 # PANEL IZQUIERDO (BARRA LATERAL) - SOLO VISIBLE SI EL USUARIO ESTÁ AUTENTICADO
 # ==============================================================================
 if st.session_state.autenticado:
@@ -126,7 +194,6 @@ else:
 # PÁGINA DE INICIO (LANDING PAGE - FLUJO GUIADO DE SUSCRIPCIÓN -> AUTH -> 2FA)
 # ==============================================================================
 if not st.session_state.autenticado:
-    # Cabecera Principal
     col_img_main, col_txt_main = st.columns([1, 3])
     with col_img_main:
         if os.path.exists(logo_path):
@@ -245,7 +312,6 @@ if not st.session_state.autenticado:
 # PANTALLA DE LA APLICACIÓN OPERATIVA (USUARIO AUTENTICADO - AVICULTURA 4.0)
 # ==============================================================================
 else:
-    # Cabecera dentro de la app
     col_img_app, col_txt_app = st.columns([1, 4])
     with col_img_app:
         if os.path.exists(logo_path):
@@ -256,7 +322,6 @@ else:
 
     st.divider()
 
-    # Pestañas de navegación operativas con Pilares de Vanguardia
     tab1, tab2, tab3, tab4, tab5 = st.tabs([
         "📊 Dashboard & IoT en Vivo", 
         "🥗 Nutrición Estocástica & Dinámica", 
@@ -415,10 +480,10 @@ else:
                 st.success("¡Análisis completado con éxito!")
                 st.info("💡 **Resultado preliminar de IA (Confianza: 92.4%):**\n\n* **Patología detectada:** Coccidiosis subclínica (*Eimeria maxima*).\n* **Severidad:** Moderada.\n* **Recomendación veterinaria:** Revisar el programa de rotación de anticoccidiales y medir humedad en cama.")
 
-    # --- TAB 4: FINANZAS (MONTE CARLO), SUSTENTABILIDAD Y REPORTE HTML ---
+    # --- TAB 4: FINANZAS (MONTE CARLO), SUSTENTABILIDAD Y PDF OFICIAL ---
     with tab4:
-        st.subheader("💰 Análisis de Sensibilidad Financiera, Sustentabilidad y Reporte Ejecutivo")
-        st.markdown("Simulaciones estocásticas Monte Carlo, estimación de huella de carbono y generación de expedientes ejecutivos en HTML (Listos para imprimir o guardar como PDF).")
+        st.subheader("💰 Análisis de Sensibilidad Financiera, Sustentabilidad y Reportes PDF")
+        st.markdown("Simulaciones estocásticas Monte Carlo, estimación de huella de carbono y generación directa de documentos PDF certificados.")
         
         col_f1, col_f2 = st.columns(2)
         with col_f1:
@@ -444,59 +509,25 @@ else:
             st.success("🟢 **Estatus:** Apto para certificación verde y exportación cárnica sustentable.")
 
         st.divider()
-        st.markdown("#### 📄 Generación de Reporte Ejecutivo (HTML / PDF Nativo)")
-        st.markdown("Haz clic en el botón para generar el reporte ejecutivo interactivo. Al abrirse en tu navegador, podrás presionar **Ctrl + P** (o **Cmd + P** en Mac) y seleccionar **'Guardar como PDF'** con calidad perfecta y sin requerir librerías externas.")
+        st.markdown("#### 📄 Generación de Reporte Ejecutivo en Formato PDF")
+        st.markdown("Haz clic en el botón para generar el documento PDF oficial con todos los indicadores zootécnicos, financieros y de sustentabilidad.")
 
-        if st.button("📥 Generar y Descargar Reporte Ejecutivo Oficial"):
-            # Generar contenido HTML profesional y vanguardista
-            html_content = f"""
-            <!DOCTYPE html>
-            <html lang="es">
-            <head>
-                <meta charset="UTF-8">
-                <title>Reporte Ejecutivo - Engord-IA Pollo</title>
-                <style>
-                    body {{ font-family: 'Helvetica Neue', Arial, sans-serif; margin: 40px; color: #333; background-color: #f9f9f9; }}
-                    .container {{ max-width: 800px; margin: auto; background: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }}
-                    h1 {{ color: #008080; border-bottom: 2px solid #00FFCC; padding-bottom: 10px; }}
-                    h2 {{ color: #2D3748; margin-top: 30px; border-left: 4px solid #008080; padding-left: 10px; }}
-                    .metric-box {{ display: flex; justify-content: space-between; background: #F7FAFC; padding: 15px; margin: 10px 0; border-radius: 6px; border: 1px solid #E2E8F0; }}
-                    .footer {{ margin-top: 40px; text-align: center; font-size: 0.85rem; color: #718096; border-top: 1px solid #E2E8F0; padding-top: 15px; }}
-                </style>
-            </head>
-            <body>
-                <div class="container">
-                    <h1>🐔 ENGORD-IA POLLO</h1>
-                    <p><em>Inteligencia artificial que potencia la nutrición y blinda la rentabilidad de tus pollos con precisión matemática.</em></p>
-                    
-                    <h2>1. Resumen Zootécnico del Lote</h2>
-                    <div class="metric-box"><span>Línea Genética:</span><strong>{linea_genetica}</strong></div>
-                    <div class="metric-box"><span>Aves Iniciales:</span><strong>{num_aves:,}</strong></div>
-                    <div class="metric-box"><span>Peso Meta Comercial:</span><strong>{peso_meta} kg</strong></div>
-                    <div class="metric-box"><span>ICA Objetivo:</span><strong>{ica_objetivo}</strong></div>
+        # Generar bytes del PDF nativo
+        pdf_bytes = generar_reporte_pdf_nativo(
+            linea=linea_genetica,
+            aves=num_aves,
+            peso_meta=peso_meta,
+            precio_venta=precio_venta,
+            co2=co2_ton,
+            nit=nit_kg
+        )
 
-                    <h2>2. Indicadores Económicos y Sustentables</h2>
-                    <div class="metric-box"><span>Precio de Venta Configurado:</span><strong>${precio_venta:.2f} MXN / kg</strong></div>
-                    <div class="metric-box"><span>Huella de Carbono Estimada:</span><strong>{co2_ton:.2f} Ton CO₂e</strong></div>
-                    <div class="metric-box"><span>Excreción de Nitrógeno:</span><strong>{nit_kg:,.1f} kg N</strong></div>
-                    <div class="metric-box"><span>Estatus de Certificación ESG:</span><strong>Apto para Exportación Verde</strong></div>
-
-                    <div class="footer">
-                        Reporte certificado y generado automáticamente por la plataforma <strong>Engord-IA Pollo</strong>.<br>
-                        Desarrollado y creado por: <strong>DR. ALEJANDRO CASTAÑEDA CORREA</strong>
-                    </div>
-                </div>
-            </body>
-            </html>
-            """
-            
-            st.download_button(
-                label="💾 Guardar Reporte Ejecutivo HTML",
-                data=html_content,
-                file_name="Reporte_Ejecutivo_EngordIA.html",
-                mime="text/html"
-            )
-            st.success("✅ ¡Reporte generado con éxito! Haz clic en el botón de descarga y luego imprímelo como PDF desde tu navegador.")
+        st.download_button(
+            label="📥 Descargar Reporte Ejecutivo Oficial (.PDF)",
+            data=pdf_bytes,
+            file_name="Reporte_Ejecutivo_EngordIA.pdf",
+            mime="application/pdf"
+        )
 
     # --- TAB 5: CALENDARIO SANITARIO ---
     with tab5:
