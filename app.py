@@ -60,8 +60,6 @@ with st.sidebar:
     else:
         st.title("🐔 Engord-IA Pollo")
         
-    st.markdown("### **Engord-IA Pollo**")
-    st.markdown("*«Inteligencia artificial que potencia la genética y engorda de tus pollos con precisión matemática.»*")
     st.divider()
     
     # 1. ACCESO Y SEGURIDAD (SEPARADO)
@@ -136,7 +134,6 @@ with st.sidebar:
     st.markdown('<p class="credits-text">DESARROLLADA Y CREADA POR: DR. ALEJANDRO CASTAÑEDA CORREA</p>', unsafe_allow_html=True)
 
 # --- PANTALLA PRINCIPAL (PÁGINA DE INICIO) ---
-# Cabecera principal con logotipo integrado lado a lado
 col_img_main, col_txt_main = st.columns([1, 4])
 with col_img_main:
     if os.path.exists(logo_path):
