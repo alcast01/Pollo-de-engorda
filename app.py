@@ -13,7 +13,7 @@ try:
 except ImportError:
     REPORTLAB_DISPONIBLE = False
 
-# Inicializar estado de sesión para autenticación y 2FA
+# Inicialización robusta del estado de sesión
 if "autenticado" not in st.session_state:
     st.session_state.autenticado = False
 if "usuario_nombre" not in st.session_state:
@@ -23,9 +23,9 @@ if "selected_plan" not in st.session_state:
 if "auth_stage" not in st.session_state:
     st.session_state.auth_stage = "planes"  # "planes", "login", "2fa_verify"
 if "mock_code" not in st.session_state:
-    st.mock_code = "1234"
+    st.session_state.mock_code = "1234"
 if "bitacora_vehiculos" not in st.session_state:
-    st.bitacora_vehiculos = []
+    st.session_state.bitacora_vehiculos = []
 
 # Configuración de la página
 st.set_page_config(
@@ -83,7 +83,7 @@ if st.session_state.autenticado:
         st.divider()
         st.success(f"Sesión activa: **{st.session_state.usuario_nombre}**")
         st.info(f"Plan Activo: {st.session_state.selected_plan}")
-        if st.button("🔴 Cerrar Sesión", use_container_width=True):
+        if st.button("🔴 Cerrar Sesión", use_column_width=True):
             st.session_state.autenticado = False
             st.session_state.usuario_nombre = ""
             st.session_state.auth_stage = "planes"
@@ -415,7 +415,7 @@ else:
                     st.session_state.bitacora_vehiculos.append({"Placa": placa, "Tipo": tipo_v, "Origen": origen, "Estado": estado})
                     st.success(f"Vehículo {placa} registrado correctamente. Estatus: {estado}")
             
-            if st.session_state.bitacora_vehiculos:
+            if st.session_state.get("bitacora_vehiculos"):
                 st.markdown("##### Historial de Accesos:")
                 st.dataframe(pd.DataFrame(st.session_state.bitacora_vehiculos), use_container_width=True)
 
