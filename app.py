@@ -12,7 +12,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Estilos CSS personalizados para un look vanguardista y sophisticated
+# Estilos CSS personalizados para un look vanguardista y sofisticado
 st.markdown("""
     <style>
     .main-header {
@@ -147,17 +147,18 @@ if not st.session_state.autenticado:
 
     # --- PESTAÑA 2: PLANES DE SUSCRIPCIÓN Y LICENCIAMIENTO ---
     with tab_suscripciones:
-        st.markdown("### 📋 Selección de Planes y Licenciamiento")
-        st.markdown("Elige el esquema de suscripción que mejor se adapte al volumen y necesidades de tu producción:")
+        st.markdown("### 📋 Inversión Inteligente para tu Producción Avícola")
+        st.markdown("Asegura el máximo rendimiento zootécnico y protege tus márgenes de ganancia frente a la volatilidad de los insumos con planes diseñados para cada escala:")
         
         col_p1, col_p2, col_p3 = st.columns(3)
         
         with col_p1:
             st.markdown("#### 🥉 Plan Trimestral")
             st.markdown("**Duración:** 3 Meses")
+            st.markdown("### **$2,499 MXN**")
             st.markdown("""
 * Ideal para evaluar un ciclo completo de engorda.
-* Formulación lineal básica de dietas.
+* Formulación lineal básica de dietas por mínimo costo.
 * Registro y seguimiento de calendario sanitario.
 """)
             if st.button("Elegir Plan Trimestral", use_container_width=True):
@@ -166,24 +167,27 @@ if not st.session_state.autenticado:
         with col_p2:
             st.markdown("#### 🥈 Plan Semestral")
             st.markdown("**Duración:** 6 Meses")
+            st.markdown("### **$4,599 MXN**")
             st.markdown("""
+* **Ahorro del 8%** frente al plan trimestral.
 * Optimización avanzada para 2 ciclos consecutivos.
-* Recomendaciones predictivas de IA.
-* Análisis y proyecciones de conversión (ICA).
+* Recomendaciones predictivas de IA y control de ICA.
 """)
             if st.button("Elegir Plan Semestral", use_container_width=True):
                 st.success("¡Has seleccionado el Plan Semestral! Procede a la pestaña de Acceso y Seguridad para ingresar.")
 
         with col_p3:
-            st.markdown("#### 🥇 Plan Anual (Recomendado)")
+            st.markdown("#### 🥇 Plan Anual (PRO - Recomendado)")
             st.markdown("**Duración:** 12 Meses")
+            st.markdown("### **$7,999 MXN**")
             st.markdown("""
-* Acceso total e ilimitado todo el año.
-* Motores predictivos de ganancia diaria de peso.
-* Calibración multi-galpón y soporte prioritario.
+* **¡Ahorro masivo del 20%!** (Equivalente a $666 MXN al mes).
+* **Blindaje Anual de Costos:** Protege tu granja contra las fluctuaciones estacionales en el precio del maíz y la soya mediante formulación matemática continua.
+* **Máxima Rentabilidad Garantizada:** Control total en múltiples ciclos de producción, minimizando el costo por kilo producido y maximizando tu conversión alimenticia (ICA).
+* **Soporte Prioritario y Actualizaciones VIP:** Acceso anticipado a todos los módulos de analítica predictiva del Dr. Alejandro Castañeda Correa.
 """)
-            if st.button("Elegir Plan Anual", use_container_width=True):
-                st.success("¡Has seleccionado el Plan Anual! Procede a la pestaña de Acceso y Seguridad para ingresar.")
+            if st.button("🚀 Asegurar Licencia Anual", use_container_width=True):
+                st.success("¡Excelente decisión! El Plan Anual asegurará la rentabilidad máxima de tu granja durante todo el año. Procede a la pestaña de Acceso y Seguridad.")
 
 # ==============================================================================
 # PANTALLA DE LA APLICACIÓN (CUANDO EL USUARIO YA INICIÓ SESIÓN)
