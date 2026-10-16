@@ -4,15 +4,21 @@ import numpy as np
 import os
 from scipy.optimize import linprog
 
-# Configuración inicial de la página
+# Inicializar estado de sesión para autenticación
+if "autenticado" not in st.session_state:
+    st.session_state.autenticado = False
+if "usuario_nombre" not in st.session_state:
+    st.session_state.usuario_nombre = ""
+
+# Configuración dinámicas de la página según el estado de autenticación
 st.set_page_config(
     page_title="Engord-IA Pollo | Inteligencia Avícola",
     page_icon="🐔",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="expanded" if st.session_state.autenticado else "collapsed"
 )
 
-# Estilos CSS personalizados para un look vanguardista y sofisticado
+# Estilos CSS personalizados
 st.markdown("""
     <style>
     .main-header {
@@ -44,35 +50,29 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Inicializar estado de sesión para autenticación
-if "autenticado" not in st.session_state:
-    st.session_state.autenticado = False
-if "usuario_nombre" not in st.session_state:
-    st.session_state.usuario_nombre = ""
-
-# Ruta común del logotipo vanguardista
+# Ruta común del logotipo
 logo_path = "watermarked_img_17480332752636885818.jpg"
 
-# --- PANEL IZQUIERDO (BARRA LATERAL) ---
-with st.sidebar:
-    if os.path.exists(logo_path):
-        st.image(logo_path, use_column_width=True)
-    else:
-        st.title("🐔 Engord-IA Pollo")
-        
-    st.divider()
-    
-    # ESTADO DE SESIÓN O BOTÓN DE SALIDA
-    if st.session_state.autenticado:
+# ==============================================================================
+# PANEL IZQUIERDO (BARRA LATERAL) - SOLO VISIBLE SI EL USUARIO ESTÁ AUTENTICADO
+# ==============================================================================
+if st.session_state.autenticado:
+    with st.sidebar:
+        if os.path.exists(logo_path):
+            st.image(logo_path, use_column_width=True)
+        else:
+            st.title("🐔 Engord-IA Pollo")
+            
+        st.divider()
         st.success(f"Sesión activa: **{st.session_state.usuario_nombre}**")
-        if st.button("🔴 Cerrar Sesión"):
+        if st.button("🔴 Cerrar Sesión", use_container_width=True):
             st.session_state.autenticado = False
             st.session_state.usuario_nombre = ""
             st.rerun()
+            
         st.divider()
 
-    # CALIBRACIÓN AVANZADA DE PRODUCCIÓN Y RENDIMIENTO (SOLO VISIBLE AL AUTENTICARSE)
-    if st.session_state.autenticado:
+        # CALIBRACIÓN AVANZADA DE PRODUCCIÓN Y RENDIMIENTO
         st.subheader("⚙️ Calibración de Granja")
         st.markdown("Parámetros clave para rendimiento y control de costos:")
         
@@ -98,22 +98,29 @@ with st.sidebar:
             precio_venta = st.number_input("Precio Venta en Pie ($/kg)", value=34.00, step=0.50)
 
         st.divider()
-
-    # CRÉDITOS OFICIALES (EN MAYÚSCULAS)
-    st.markdown('<p class="credits-text">DESARROLLADA Y CREADA POR: DR. ALEJANDRO CASTAÑEDA CORREA</p>', unsafe_allow_html=True)
+        st.markdown('<p class="credits-text">DESARROLLADA Y CREADA POR: DR. ALEJANDRO CASTAÑEDA CORREA</p>', unsafe_allow_html=True)
+else:
+    # Ocultar deliberadamente la barra lateral en la página de inicio
+    st.markdown("""
+        <style>
+            [data-testid="stSidebar"] {
+                display: none;
+            }
+        </style>
+    """, unsafe_allow_html=True)
 
 
 # ==============================================================================
-# PÁGINA DE INICIO (LANDING PAGE SI NO ESTÁ AUTENTICADO)
+# PÁGINA DE INICIO (LANDING PAGE - SIN PANEL LATERAL)
 # ==============================================================================
 if not st.session_state.autenticado:
-    # Cabecera Principal con el Nuevo Logotipo
+    # Cabecera Principal limpia y centrada
     col_img_main, col_txt_main = st.columns([1, 3])
     with col_img_main:
         if os.path.exists(logo_path):
             st.image(logo_path, use_column_width=True)
     with col_txt_main:
-        st.markdown('<p class="main-header">🐔 Engord-IA Pollo: Plataforma Avícola de Precisión</p>', unsafe_allow_html=True)
+        st.markdown('<p class="main-header">Engord-IA Pollo: Plataforma Avícola de Precisión</p>', unsafe_allow_html=True)
         st.markdown('<p class="sub-slogan">«Inteligencia artificial que potencia la nutrición, optimiza la ganancia de peso y blinda la rentabilidad de tus pollos con precisión matemática.»</p>', unsafe_allow_html=True)
 
     st.divider()
@@ -188,6 +195,10 @@ if not st.session_state.autenticado:
 """)
             if st.button("🚀 Asegurar Licencia Anual", use_container_width=True):
                 st.success("¡Excelente decisión! El Plan Anual asegurará la rentabilidad máxima de tu granja durante todo el año. Procede a la pestaña de Acceso y Seguridad.")
+
+    st.divider()
+    st.markdown('<p class="credits-text">DESARROLLADA Y CREADA POR: DR. ALEJANDRO CASTAÑEDA CORREA</p>', unsafe_allow_html=True)
+
 
 # ==============================================================================
 # PANTALLA DE LA APLICACIÓN OPERATIVA (CUANDO EL USUARIO YA INICIÓ SESIÓN)
