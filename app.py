@@ -71,7 +71,7 @@ with st.sidebar:
             st.rerun()
         st.divider()
 
-    # CALIBRACIÓN AVANZADA DE PRODUCCIÓN Y RENDIMIENTO (DENTRO DE LA APLICACIÓN)
+    # CALIBRACIÓN AVANZADA DE PRODUCCIÓN Y RENDIMIENTO (SOLO VISIBLE AL AUTENTICARSE)
     if st.session_state.autenticado:
         st.subheader("⚙️ Calibración de Granja")
         st.markdown("Parámetros clave para rendimiento y control de costos:")
@@ -118,46 +118,66 @@ if not st.session_state.autenticado:
 
     st.divider()
 
-    # Dos columnas principales: Acceso a la izquierda y Suscripciones a la derecha
-    col_login, col_planes = st.columns([1, 1], gap="large")
+    # PESTAÑAS DE ACCESO Y SUSCRIPCIÓN EN LA PÁGINA DE INICIO
+    tab_acceso, tab_suscripciones = st.tabs([
+        "🔐 Acceso y Seguridad", 
+        "💳 Planes de Suscripción y Licenciamiento"
+    ])
 
-    with col_login:
-        st.markdown("### 🔐 Acceso y Seguridad")
-        st.markdown("Ingresa tus credenciales para acceder al panel de control de tu granja:")
+    # --- PESTAÑA 1: ACCESO Y SEGURIDAD ---
+    with tab_acceso:
+        st.markdown("### 🔑 Autenticación de Usuario")
+        st.markdown("Ingresa tus datos para ingresar al panel operativo de la aplicación:")
         
-        with st.form("form_login_principal"):
-            correo_input = st.text_input("Correo electrónico / Usuario")
-            password_input = st.text_input("Contraseña / Factor de Autenticación", type="password")
-            btn_login = st.form_submit_button("🚀 Iniciar Sesión en la Aplicación", use_container_width=True)
-            
-            if btn_login:
-                if correo_input and password_input:
-                    st.session_state.autenticado = True
-                    st.session_state.usuario_nombre = correo_input.split('@')[0].capitalize()
-                    st.success(f"¡Autenticación exitosa! Bienvenido, {st.session_state.usuario_nombre}.")
-                    st.rerun()
-                else:
-                    st.error("⚠️ Por favor ingresa tu correo y contraseña.")
+        col_form_center, _ = st.columns([2, 1])
+        with col_form_center:
+            with st.form("form_login_pestana"):
+                correo_input = st.text_input("Correo electrónico / Usuario")
+                password_input = st.text_input("Contraseña / Factor de Autenticación", type="password")
+                btn_login = st.form_submit_button("🚀 Iniciar Sesión en Engord-IA Pollo", use_container_width=True)
+                
+                if btn_login:
+                    if correo_input and password_input:
+                        st.session_state.autenticado = True
+                        st.session_state.usuario_nombre = correo_input.split('@')[0].capitalize()
+                        st.success(f"¡Autenticación exitosa! Bienvenido, {st.session_state.usuario_nombre}.")
+                        st.rerun()
+                    else:
+                        st.error("⚠️ Por favor ingresa tu correo y contraseña.")
 
-    with col_planes:
-        st.markdown("### 💳 Planes de Suscripción y Licenciamiento")
-        st.markdown("Elige el plan que mejor se adapte a la escala de tu producción:")
+    # --- PESTAÑA 2: PLANES DE SUSCRIPCIÓN Y LICENCIAMIENTO ---
+    with tab_suscripciones:
+        st.markdown("### 📋 Selección de Planes y Licenciamiento")
+        st.markdown("Elige el esquema de suscripción que mejor se adapte al volumen y necesidades de tu producción:")
         
-        plan_sel = st.radio(
-            "Selecciona tu esquema:",
-            [
-                "Plan Trimestral (3 Meses) — Ideal para un ciclo de prueba",
-                "Plan Semestral (6 Meses) — Optimización avanzada para 2 ciclos",
-                "Plan Anual (12 Meses - Recomendado) — Acceso total e ilimitado todo el año"
-            ]
-        )
+        col_p1, col_p2, col_p3 = st.columns(3)
         
-        if "Trimestral" in plan_sel:
-            st.info("💡 **Plan Trimestral:** Incluye formulación lineal de dietas, seguimiento de vacunación y análisis básico de costos por lote.")
-        elif "Semestral" in plan_sel:
-            st.info("💡 **Plan Semestral:** Incluye alertas inteligentes de IA, proyecciones avanzadas de conversión (ICA) y soporte prioritario.")
-        else:
-            st.success("✨ **Plan Anual:** Incluye acceso completo e ilimitado, algoritmos predictivos de peso, calibración multi-galpón y asesoría técnica.")
+        with col_p1:
+            st.markdown("#### 🥉 Plan Trimestral")
+            st.markdown("**Duración:** 3 Meses")
+            st.markdown("* Ideal para evaluar un ciclo completo de engorda.
+* Formulación lineal básica de dietas.
+* Registro y seguimiento de calendario sanitario.")
+            if st.button("Elegir Plan Trimestral", use_container_width=True):
+                st.success("¡Has seleccionado el Plan Trimestral! Procede a la pestaña de Acceso y Seguridad para ingresar.")
+
+        with col_p2:
+            st.markdown("#### 🥈 Plan Semestral")
+            st.markdown("**Duración:** 6 Meses")
+            st.markdown("* Optimización avanzada para 2 ciclos consecutivos.
+* Recomendaciones predictivas de IA.
+* Análisis y proyecciones de conversión (ICA).")
+            if st.button("Elegir Plan Semestral", use_container_width=True):
+                st.success("¡Has seleccionado el Plan Semestral! Procede a la pestaña de Acceso y Seguridad para ingresar.")
+
+        with col_p3:
+            st.markdown("#### 🥇 Plan Anual (Recomendado)")
+            st.markdown("**Duración:** 12 Meses")
+            st.markdown("* Acceso total e ilimitado todo el año.
+* Motores predictivos de ganancia diaria de peso.
+* Calibración multi-galpón y soporte prioritario.")
+            if st.button("Elegir Plan Anual", use_container_width=True):
+                st.success("¡Has seleccionado el Plan Anual! Procede a la pestaña de Acceso y Seguridad para ingresar.")
 
 # ==============================================================================
 # PANTALLA DE LA APLICACIÓN (CUANDO EL USUARIO YA INICIÓ SESIÓN)
