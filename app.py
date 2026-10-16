@@ -50,7 +50,7 @@ if "autenticado" not in st.session_state:
 if "usuario_nombre" not in st.session_state:
     st.session_state.usuario_nombre = ""
 
-# Ruta común del logotipo
+# Ruta común del logotipo vanguardista
 logo_path = "watermarked_img_17480332752636885818.jpg"
 
 # --- PANEL IZQUIERDO (BARRA LATERAL) ---
@@ -104,21 +104,21 @@ with st.sidebar:
 
 
 # ==============================================================================
-# PÁGINA DE INICIO (SI NO ESTÁ AUTENTICADO)
+# PÁGINA DE INICIO (LANDING PAGE SI NO ESTÁ AUTENTICADO)
 # ==============================================================================
 if not st.session_state.autenticado:
-    # Cabecera Principal con Logotipo
+    # Cabecera Principal con el Nuevo Logotipo
     col_img_main, col_txt_main = st.columns([1, 3])
     with col_img_main:
         if os.path.exists(logo_path):
             st.image(logo_path, use_column_width=True)
     with col_txt_main:
         st.markdown('<p class="main-header">🐔 Engord-IA Pollo: Plataforma Avícola de Precisión</p>', unsafe_allow_html=True)
-        st.markdown('<p class="sub-slogan">«Inteligencia artificial que potencia la genética y engorda de tus pollos con precisión matemática.»</p>', unsafe_allow_html=True)
+        st.markdown('<p class="sub-slogan">«Inteligencia artificial que optimiza la nutrición, maximiza la ganancia de peso y blinda la rentabilidad de tus pollos.»</p>', unsafe_allow_html=True)
 
     st.divider()
 
-    # PESTAÑAS DE ACCESO Y SUSCRIPCIÓN EN LA PÁGINA DE INICIO
+    # Pestañas independientes de Acceso y Suscripción
     tab_acceso, tab_suscripciones = st.tabs([
         "🔐 Acceso y Seguridad", 
         "💳 Planes de Suscripción y Licenciamiento"
@@ -127,7 +127,7 @@ if not st.session_state.autenticado:
     # --- PESTAÑA 1: ACCESO Y SEGURIDAD ---
     with tab_acceso:
         st.markdown("### 🔑 Autenticación de Usuario")
-        st.markdown("Ingresa tus datos para ingresar al panel operativo de la aplicación:")
+        st.markdown("Ingresa tus credenciales para acceder al panel operativo de la aplicación:")
         
         col_form_center, _ = st.columns([2, 1])
         with col_form_center:
@@ -148,7 +148,7 @@ if not st.session_state.autenticado:
     # --- PESTAÑA 2: PLANES DE SUSCRIPCIÓN Y LICENCIAMIENTO ---
     with tab_suscripciones:
         st.markdown("### 📋 Inversión Inteligente para tu Producción Avícola")
-        st.markdown("Asegura el máximo rendimiento zootécnico y protege tus márgenes de ganancia frente a la volatilidad de los insumos con planes diseñados para cada escala:")
+        st.markdown("Asegura el máximo rendimiento zootécnico y protege tus márgenes frente a la volatilidad de las materias primas:")
         
         col_p1, col_p2, col_p3 = st.columns(3)
         
@@ -190,7 +190,7 @@ if not st.session_state.autenticado:
                 st.success("¡Excelente decisión! El Plan Anual asegurará la rentabilidad máxima de tu granja durante todo el año. Procede a la pestaña de Acceso y Seguridad.")
 
 # ==============================================================================
-# PANTALLA DE LA APLICACIÓN (CUANDO EL USUARIO YA INICIÓ SESIÓN)
+# PANTALLA DE LA APLICACIÓN OPERATIVA (CUANDO EL USUARIO YA INICIÓ SESIÓN)
 # ==============================================================================
 else:
     # Cabecera dentro de la app
@@ -200,7 +200,7 @@ else:
             st.image(logo_path, use_column_width=True)
     with col_txt_app:
         st.markdown('<p class="main-header">🐔 Engord-IA Pollo: Panel de Control Inteligente</p>', unsafe_allow_html=True)
-        st.markdown('<p class="sub-slogan">«Inteligencia artificial que potencia la genética y engorda de tus pollos con precisión matemática.»</p>', unsafe_allow_html=True)
+        st.markdown('<p class="sub-slogan">«Inteligencia artificial que optimiza la nutrición, maximiza la ganancia de peso y blinda la rentabilidad de tus pollos.»</p>', unsafe_allow_html=True)
 
     st.divider()
 
