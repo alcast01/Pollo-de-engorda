@@ -83,7 +83,7 @@ if st.session_state.autenticado:
         st.divider()
         st.success(f"Sesión activa: **{st.session_state.usuario_nombre}**")
         st.info(f"Plan Activo: {st.session_state.selected_plan}")
-        if st.button("🔴 Cerrar Sesión", use_column_width=True):
+        if st.button("🔴 Cerrar Sesión", use_container_width=True):
             st.session_state.autenticado = False
             st.session_state.usuario_nombre = ""
             st.session_state.auth_stage = "planes"
