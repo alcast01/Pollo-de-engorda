@@ -10,7 +10,7 @@ if "autenticado" not in st.session_state:
 if "usuario_nombre" not in st.session_state:
     st.session_state.usuario_nombre = ""
 
-# Configuración dinámicas de la página según el estado de autenticación
+# Configuración dinámica de la página según el estado de autenticación
 st.set_page_config(
     page_title="Engord-IA Pollo | Inteligencia Avícola",
     page_icon="🐔",
@@ -100,7 +100,7 @@ if st.session_state.autenticado:
         st.divider()
         st.markdown('<p class="credits-text">DESARROLLADA Y CREADA POR: DR. ALEJANDRO CASTAÑEDA CORREA</p>', unsafe_allow_html=True)
 else:
-    # Ocultar deliberadamente la barra lateral en la página de inicio
+    # Ocultar la barra lateral en la pantalla de inicio
     st.markdown("""
         <style>
             [data-testid="stSidebar"] {
@@ -114,7 +114,7 @@ else:
 # PÁGINA DE INICIO (LANDING PAGE - SIN PANEL LATERAL)
 # ==============================================================================
 if not st.session_state.autenticado:
-    # Cabecera Principal limpia y centrada
+    # Cabecera Principal
     col_img_main, col_txt_main = st.columns([1, 3])
     with col_img_main:
         if os.path.exists(logo_path):
@@ -131,13 +131,14 @@ if not st.session_state.autenticado:
         "💳 Planes de Suscripción y Licenciamiento"
     ])
 
-    # --- PESTAÑA 1: ACCESO Y SEGURIDAD ---
+    # --- PESTAÑA 1: ACCESO Y SEGURIDAD (FORMULARIO CENTRADO) ---
     with tab_acceso:
-        st.markdown("### 🔑 Autenticación de Usuario")
-        st.markdown("Ingresa tus credenciales para acceder al panel operativo de la aplicación:")
+        col_left, col_center, col_right = st.columns([1, 2, 1])
         
-        col_form_center, _ = st.columns([2, 1])
-        with col_form_center:
+        with col_center:
+            st.markdown("<h3 style='text-align: center;'>🔑 Autenticación de Usuario</h3>", unsafe_allow_html=True)
+            st.markdown("<p style='text-align: center;'>Ingresa tus credenciales para acceder al panel operativo de la aplicación:</p>", unsafe_allow_html=True)
+            
             with st.form("form_login_pestana"):
                 correo_input = st.text_input("Correo electrónico / Usuario")
                 password_input = st.text_input("Contraseña / Factor de Autenticación", type="password")
