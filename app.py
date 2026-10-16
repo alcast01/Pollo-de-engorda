@@ -72,7 +72,7 @@ if st.session_state.autenticado:
         st.divider()
         st.success(f"Sesión activa: **{st.session_state.usuario_nombre}**")
         st.info(f"Plan Activo: {st.session_state.selected_plan}")
-        if st.button("🔴 Cerrar Sesión", use_column_width=True):
+        if st.button("🔴 Cerrar Sesión", use_container_width=True):
             st.session_state.autenticado = False
             st.session_state.usuario_nombre = ""
             st.session_state.auth_stage = "planes"
@@ -150,7 +150,7 @@ if not st.session_state.autenticado:
 * Formulación lineal básica de dietas por mínimo costo.
 * Registro y seguimiento de calendario sanitario.
 """)
-            if st.button("Elegir Plan Trimestral", use_column_width=True):
+            if st.button("Elegir Plan Trimestral"):
                 st.session_state.selected_plan = "Plan Trimestral (3 Meses)"
                 st.session_state.auth_stage = "login"
                 st.rerun()
@@ -164,7 +164,7 @@ if not st.session_state.autenticado:
 * Optimización avanzada para 2 ciclos consecutivos.
 * Recomendaciones predictivas de IA y control de ICA.
 """)
-            if st.button("Elegir Plan Semestral", use_column_width=True):
+            if st.button("Elegir Plan Semestral"):
                 st.session_state.selected_plan = "Plan Semestral (6 Meses)"
                 st.session_state.auth_stage = "login"
                 st.rerun()
@@ -179,7 +179,7 @@ if not st.session_state.autenticado:
 * **Máxima Rentabilidad Garantizada:** Control total en múltiples ciclos de producción, minimizando el costo por kilo producido y maximizando tu conversión alimenticia (ICA).
 * **Soporte Prioritario y Actualizaciones VIP:** Acceso anticipado a todos los módulos de analítica predictiva del Dr. Alejandro Castañeda Correa.
 """)
-            if st.button("🚀 Asegurar Licencia Anual", use_column_width=True):
+            if st.button("🚀 Asegurar Licencia Anual"):
                 st.session_state.selected_plan = "Plan Anual (12 Meses)"
                 st.session_state.auth_stage = "login"
                 st.rerun()
@@ -204,7 +204,6 @@ if not st.session_state.autenticado:
                 if btn_next:
                     if correo_input and password_input:
                         st.session_state.temp_user = correo_input.split('@')[0].capitalize()
-                        # Generar código aleatorio de 4 dígitos para 2FA
                         st.session_state.mock_code = str(np.random.randint(1000, 9999))
                         st.session_state.auth_stage = "2fa_verify"
                         st.rerun()
