@@ -5,14 +5,6 @@ import os
 import io
 from scipy.optimize import linprog
 
-# Intentar importar ReportLab para PDF; si no está disponible, se maneja de forma segura
-try:
-    from reportlab.lib.pagesizes import letter
-    from reportlab.pdfgen import canvas
-    REPORTLAB_DISPONIBLE = True
-except ImportError:
-    REPORTLAB_DISPONIBLE = False
-
 # Inicialización robusta del estado de sesión
 if "autenticado" not in st.session_state:
     st.session_state.autenticado = False
@@ -278,7 +270,6 @@ else:
         st.subheader("📡 Telemetría IoT en Tiempo Real y Visión por Computadora")
         st.markdown("Monitoreo continuo de variables ambientales, consumo automatizado y estimación de peso sin contacto.")
         
-        # Simulación de lectura IoT en vivo
         temp_iot = round(np.random.normal(temp_galpon, 0.8), 2)
         hum_iot = round(np.random.normal(humedad_galpon, 2.0), 2)
         nh3_iot = round(np.random.uniform(6.0, 13.5), 1)
@@ -297,7 +288,6 @@ else:
         with col_i5:
             st.metric("Consumo Hídrico", f"{agua_iot} L/h", "Estable")
 
-        # Motor de Alertas Tempranas IoT
         if temp_iot > 29.0:
             st.warning(f"🔥 **[ALERTA TEMPRANA IOT]** Temperatura elevada detectada ({temp_iot}°C). Se sugiere activar ventilación túnel y refrigeración evaporativa.")
         if nh3_iot > 12.0:
@@ -305,7 +295,6 @@ else:
 
         st.divider()
         
-        # Visión Artificial: Estimación de Peso sin Contacto
         col_v1, col_v2 = st.columns(2)
         with col_v1:
             st.markdown("#### 📷 Estimación de Peso por Visión Artificial")
@@ -331,7 +320,6 @@ else:
             fase_etapa = st.selectbox("Fase Nutricional", ["Iniciador (1-10 días)", "Crecimiento (11-24 días)", "Finalizador / Retiro (25-42 días)"])
         
         with col_d2:
-            # Requerimientos base según fase
             if "Iniciador" in fase_etapa:
                 req_base = {"pb": 22.5, "em": 3000.0, "lis": 1.25, "met": 0.50}
             elif "Crecimiento" in fase_etapa:
@@ -339,7 +327,6 @@ else:
             else:
                 req_base = {"pb": 18.0, "em": 3250.0, "lis": 0.95, "met": 0.40}
                 
-            # Factor de corrección por clima (Estrés calórico si T > 26°C)
             factor_clima = 1.0 if temp_iot <= 26.0 else 1.0 + (temp_iot - 26.0) * 0.02
             st.info(f"🌡️ Temperatura actual IoT: **{temp_iot}°C** | Factor de ajuste por estrés calórico: **{factor_clima:.2f}x**")
 
@@ -428,10 +415,10 @@ else:
                 st.success("¡Análisis completado con éxito!")
                 st.info("💡 **Resultado preliminar de IA (Confianza: 92.4%):**\n\n* **Patología detectada:** Coccidiosis subclínica (*Eimeria maxima*).\n* **Severidad:** Moderada.\n* **Recomendación veterinaria:** Revisar el programa de rotación de anticoccidiales y medir humedad en cama.")
 
-    # --- TAB 4: FINANZAS (MONTE CARLO), SUSTENTABILIDAD Y PDF ---
+    # --- TAB 4: FINANZAS (MONTE CARLO), SUSTENTABILIDAD Y REPORTE HTML ---
     with tab4:
-        st.subheader("💰 Análisis de Sensibilidad Financiera, Sustentabilidad y Reportes PDF")
-        st.markdown("Simulaciones estocásticas Monte Carlo, estimación de huella de carbono y generación de expedientes ejecutivos certificados.")
+        st.subheader("💰 Análisis de Sensibilidad Financiera, Sustentabilidad y Reporte Ejecutivo")
+        st.markdown("Simulaciones estocásticas Monte Carlo, estimación de huella de carbono y generación de expedientes ejecutivos en HTML (Listos para imprimir o guardar como PDF).")
         
         col_f1, col_f2 = st.columns(2)
         with col_f1:
@@ -448,7 +435,7 @@ else:
 
         with col_f2:
             st.markdown("#### 🌱 Huella Ecológica y Certificación ESG")
-            consumo_total_aprox = num_aves * 4.2 * 1.5 # kg alimento total estimado por ciclo
+            consumo_total_aprox = num_aves * 4.2 * 1.5 
             co2_ton = (consumo_total_aprox * 1.42) / 1000.0
             nit_kg = consumo_total_aprox * 0.032
             
@@ -457,44 +444,59 @@ else:
             st.success("🟢 **Estatus:** Apto para certificación verde y exportación cárnica sustentable.")
 
         st.divider()
-        st.markdown("#### 📄 Generación de Reporte Ejecutivo PDF")
-        if st.button("📥 Descargar Reporte Ejecutivo Oficial (PDF)"):
-            if REPORTLAB_DISPONIBLE:
-                buffer = io.BytesIO()
-                p = canvas.Canvas(buffer, pagesize=letter)
-                p.setFont("Helvetica-Bold", 16)
-                p.drawString(50, 750, "ENGORD-IA POLLO - REPORTE EJECUTIVO CERTIFICADO")
-                p.setFont("Helvetica", 10)
-                p.drawString(50, 735, "Plataforma de Inteligencia Avícola y Precisión Matemática")
-                p.line(50, 725, 560, 725)
-                
-                p.setFont("Helvetica-Bold", 12)
-                p.drawString(50, 695, "1. Resumen Zootécnico")
-                p.setFont("Helvetica", 11)
-                p.drawString(60, 675, f"Línea Genética: {linea_genetica}")
-                p.drawString(60, 655, f"Aves Iniciales: {num_aves:,}")
-                p.drawString(60, 635, f"Peso Meta: {peso_meta} kg")
-                
-                p.setFont("Helvetica-Bold", 12)
-                p.drawString(50, 595, "2. Indicadores Económicos y Sustentables")
-                p.setFont("Helvetica", 11)
-                p.drawString(60, 575, f"Precio Venta Configurado: ${precio_venta:.2f} MXN/kg")
-                p.drawString(60, 555, f"Huella de Carbono: {co2_ton:.2f} Ton CO₂e")
-                
-                p.setFont("Helvetica-Oblique", 9)
-                p.drawString(50, 480, "Desarrollado y validado científicamente por Dr. Alejandro Castañeda Correa.")
-                p.showPage()
-                p.save()
-                buffer.seek(0)
-                
-                st.download_button(
-                    label="💾 Clic aquí para guardar PDF",
-                    data=buffer,
-                    file_name="Reporte_Ejecutivo_EngordIA.pdf",
-                    mime="application/pdf"
-                )
-            else:
-                st.warning("⚠️ La librería ReportLab no está instalada en el entorno local. Contacta al administrador para habilitar descargas directas de PDF.")
+        st.markdown("#### 📄 Generación de Reporte Ejecutivo (HTML / PDF Nativo)")
+        st.markdown("Haz clic en el botón para generar el reporte ejecutivo interactivo. Al abrirse en tu navegador, podrás presionar **Ctrl + P** (o **Cmd + P** en Mac) y seleccionar **'Guardar como PDF'** con calidad perfecta y sin requerir librerías externas.")
+
+        if st.button("📥 Generar y Descargar Reporte Ejecutivo Oficial"):
+            # Generar contenido HTML profesional y vanguardista
+            html_content = f"""
+            <!DOCTYPE html>
+            <html lang="es">
+            <head>
+                <meta charset="UTF-8">
+                <title>Reporte Ejecutivo - Engord-IA Pollo</title>
+                <style>
+                    body {{ font-family: 'Helvetica Neue', Arial, sans-serif; margin: 40px; color: #333; background-color: #f9f9f9; }}
+                    .container {{ max-width: 800px; margin: auto; background: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }}
+                    h1 {{ color: #008080; border-bottom: 2px solid #00FFCC; padding-bottom: 10px; }}
+                    h2 {{ color: #2D3748; margin-top: 30px; border-left: 4px solid #008080; padding-left: 10px; }}
+                    .metric-box {{ display: flex; justify-content: space-between; background: #F7FAFC; padding: 15px; margin: 10px 0; border-radius: 6px; border: 1px solid #E2E8F0; }}
+                    .footer {{ margin-top: 40px; text-align: center; font-size: 0.85rem; color: #718096; border-top: 1px solid #E2E8F0; padding-top: 15px; }}
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <h1>🐔 ENGORD-IA POLLO</h1>
+                    <p><em>Inteligencia artificial que potencia la nutrición y blinda la rentabilidad de tus pollos con precisión matemática.</em></p>
+                    
+                    <h2>1. Resumen Zootécnico del Lote</h2>
+                    <div class="metric-box"><span>Línea Genética:</span><strong>{linea_genetica}</strong></div>
+                    <div class="metric-box"><span>Aves Iniciales:</span><strong>{num_aves:,}</strong></div>
+                    <div class="metric-box"><span>Peso Meta Comercial:</span><strong>{peso_meta} kg</strong></div>
+                    <div class="metric-box"><span>ICA Objetivo:</span><strong>{ica_objetivo}</strong></div>
+
+                    <h2>2. Indicadores Económicos y Sustentables</h2>
+                    <div class="metric-box"><span>Precio de Venta Configurado:</span><strong>${precio_venta:.2f} MXN / kg</strong></div>
+                    <div class="metric-box"><span>Huella de Carbono Estimada:</span><strong>{co2_ton:.2f} Ton CO₂e</strong></div>
+                    <div class="metric-box"><span>Excreción de Nitrógeno:</span><strong>{nit_kg:,.1f} kg N</strong></div>
+                    <div class="metric-box"><span>Estatus de Certificación ESG:</span><strong>Apto para Exportación Verde</strong></div>
+
+                    <div class="footer">
+                        Reporte certificado y generado automáticamente por la plataforma <strong>Engord-IA Pollo</strong>.<br>
+                        Desarrollado y creado por: <strong>DR. ALEJANDRO CASTAÑEDA CORREA</strong>
+                    </div>
+                </div>
+            </body>
+            </html>
+            """
+            
+            st.download_button(
+                label="💾 Guardar Reporte Ejecutivo HTML",
+                data=html_content,
+                file_name="Reporte_Ejecutivo_EngordIA.html",
+                mime="text/html"
+            )
+            st.success("✅ ¡Reporte generado con éxito! Haz clic en el botón de descarga y luego imprímelo como PDF desde tu navegador.")
 
     # --- TAB 5: CALENDARIO SANITARIO ---
     with tab5:
